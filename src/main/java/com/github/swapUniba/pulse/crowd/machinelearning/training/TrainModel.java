@@ -28,7 +28,7 @@ public class TrainModel {
 
         try {
 
-            List<MongoWekaDTO> collectionList = new ArrayList<>();
+/*            List<MongoWekaDTO> collectionList = new ArrayList<>();
 
             for (String coll : _collectionNames){
                 MongoWekaDTO mongoWekaDTO = CollectionConverter.getDatasetFromMongo(_dbname, coll,_collectionNames);
@@ -56,7 +56,7 @@ public class TrainModel {
             algorithm.buildClassifier(trainingSet);
             System.out.println("Model has been built!");
             WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
-            classifierBuilt = true;
+            classifierBuilt = true;*/
 
         }
         catch (Exception ex) {
