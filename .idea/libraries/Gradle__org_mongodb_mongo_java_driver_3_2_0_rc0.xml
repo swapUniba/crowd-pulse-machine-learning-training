@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.mongodb:mongo-java-driver:3.2.0-rc0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mongodb/mongo-java-driver/3.2.0-rc0/df7cbe225a4907136a6e57775cfe8f8f496246c9/mongo-java-driver-3.2.0-rc0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mongodb/mongo-java-driver/3.2.0-rc0/f68ff0f9f4a930a029cea25778d7b127acedadfb/mongo-java-driver-3.2.0-rc0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
