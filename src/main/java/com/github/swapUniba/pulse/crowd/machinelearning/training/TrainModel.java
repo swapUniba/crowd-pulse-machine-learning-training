@@ -1,12 +1,14 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training;
 
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageToWeka;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.WekaModelHandler;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.Feature;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MLAlgorithmEnum;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
-import weka.core.Attribute;
 import weka.core.Instances;
 
 import java.util.ArrayList;
@@ -30,6 +32,8 @@ public class TrainModel {
         try {
 
             AbstractClassifier algorithm = null;
+            Instances instances = MessageToWeka.getInstancesFromMessages(messages, Feature.valueOf(config.getFeature()),config.getModelName());
+
 
             if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
                 algorithm = new J48();
@@ -45,7 +49,7 @@ public class TrainModel {
 
             String[] options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
             algorithm.setOptions(options);
-            algorithm.buildClassifier(new Instances("",new ArrayList<>(),19));
+            algorithm.buildClassifier(instances);
 
             MachineLearningTrainingPlugin.logger.info("Model has been built!");
             WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
