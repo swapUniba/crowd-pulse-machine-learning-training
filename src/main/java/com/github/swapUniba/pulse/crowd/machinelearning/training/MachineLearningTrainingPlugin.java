@@ -5,6 +5,8 @@ import com.github.frapontillo.pulse.spi.IPlugin;
 import com.github.frapontillo.pulse.util.PulseLogger;
 import org.apache.logging.log4j.Logger;
 import rx.Observable;
+import rx.Subscriber;
+import rx.observers.SafeSubscriber;
 
 public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,MachineLearningTrainingConfig> {
 
@@ -23,6 +25,24 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
 
     @Override
     protected Observable.Operator<Message, Message> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
-        return null;
+        return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
+
+            @Override
+            public void onCompleted() {
+                subscriber.onCompleted();
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                logger.error("ERRORE:" + e.toString());
+                subscriber.onError(e);
+            }
+
+            @Override
+            public void onNext(Message message) {
+                subscriber.onNext(message);
+            }
+        });
     }
 }
