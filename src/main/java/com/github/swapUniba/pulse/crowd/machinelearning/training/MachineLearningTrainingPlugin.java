@@ -8,6 +8,9 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.observers.SafeSubscriber;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,MachineLearningTrainingConfig> {
 
     private static final String PLUGIN_NAME = "machine-learning-training";
@@ -27,8 +30,12 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
     protected Observable.Operator<Message, Message> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
         return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
 
+            List<Message> messages = new ArrayList<>();
+
+            //quando il flusso dei messaggi è finito costruisci il modello
             @Override
             public void onCompleted() {
+
                 subscriber.onCompleted();
 
             }
@@ -39,8 +46,10 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
                 subscriber.onError(e);
             }
 
+            //memorizza tutti i messaggi in memoria o su file
             @Override
             public void onNext(Message message) {
+                messages.add(message);
                 subscriber.onNext(message);
             }
         });
