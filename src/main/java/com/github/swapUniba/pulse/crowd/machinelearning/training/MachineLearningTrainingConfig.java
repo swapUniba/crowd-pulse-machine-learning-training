@@ -7,11 +7,11 @@ import com.google.gson.JsonElement;
 
 public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearningTrainingConfig>{
 
-    private String algorithm ;
-    private String algorithmParams;
-    private String modelName;
-    private String feature;
-    private String constraints;
+    private String algorithm = "";
+    private String algorithmParams = "";
+    private String modelName = "";
+    private String feature = "";
+    private String constraints = "";
 
     @Override
     public MachineLearningTrainingConfig buildFromJsonElement(JsonElement jsonElement) {

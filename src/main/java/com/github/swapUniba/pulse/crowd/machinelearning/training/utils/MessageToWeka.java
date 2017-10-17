@@ -28,18 +28,26 @@ public class MessageToWeka {
             attributes.add(a);
         }
 
-        Instances instances = new Instances(modelName,attributes,10);
+        result = new Instances(modelName,attributes,10);
 
         for (Message m : messages) {
 
             Instance inst = new DenseInstance(attributes.size()); //nAttributes deve essere già scremato dagli id
-            inst.setDataset(instances);
+            inst.setDataset(result);
             List<String> wordsInMessage = getWordsFromMessage(m,feature);
 
             for (String word : wordsInMessage) {
-                int attrIndex = attributes.indexOf(word);
-                inst.setValue(attrIndex,1);
+                int attrIndex = attributes.indexOf(new Attribute(word));
+                if (attrIndex == -1) {
+                    System.out.println("CAZZ");
+                }
+                else {
+                    inst.setValue(attrIndex,1);
+                }
+
             }
+
+            result.add(inst);
 
         }
 

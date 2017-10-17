@@ -32,7 +32,7 @@ public class TrainModel {
         try {
 
             AbstractClassifier algorithm = null;
-            Instances instances = MessageToWeka.getInstancesFromMessages(messages, Feature.valueOf(config.getFeature()),config.getModelName());
+            Instances instances = MessageToWeka.getInstancesFromMessages(messages, Feature.valueOf(config.getFeature().toUpperCase()),config.getModelName());
 
 
             if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
