@@ -28,6 +28,12 @@ public class MessageToWeka {
             attributes.add(a);
         }
 
+        List<String> classValues = new ArrayList<>();
+        classValues.add("m5s");
+        classValues.add("pd");
+        Attribute classAttr = new Attribute("class",classValues);
+        attributes.add(classAttr);
+
         result = new Instances(modelName,attributes,10);
 
         for (Message m : messages) {

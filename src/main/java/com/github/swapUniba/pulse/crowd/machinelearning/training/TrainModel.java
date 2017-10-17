@@ -10,8 +10,6 @@ import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class TrainModel {
@@ -49,6 +47,7 @@ public class TrainModel {
 
             String[] options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
             algorithm.setOptions(options);
+            instances.setClassIndex(instances.numAttributes() - 1);
             algorithm.buildClassifier(instances);
 
             MachineLearningTrainingPlugin.logger.info("Model has been built!");
