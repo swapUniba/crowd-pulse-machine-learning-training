@@ -36,6 +36,11 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
             @Override
             public void onCompleted() {
 
+                TrainModel trainer = new TrainModel(machineLearningTrainingConfig,messages);
+                boolean classifierBuilt = trainer.RunTraining();
+                if (!classifierBuilt) {
+                    logger.error("ERRORE: classificatore non costruito!");
+                }
                 subscriber.onCompleted();
 
             }

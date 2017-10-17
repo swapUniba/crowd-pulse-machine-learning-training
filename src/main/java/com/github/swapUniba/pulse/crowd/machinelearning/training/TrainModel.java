@@ -6,6 +6,7 @@ import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
+import weka.core.Attribute;
 import weka.core.Instances;
 
 import java.util.ArrayList;
@@ -27,6 +28,28 @@ public class TrainModel {
         boolean classifierBuilt = false;
 
         try {
+
+            AbstractClassifier algorithm = null;
+
+            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
+                algorithm = new J48();
+            }
+
+            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.NaiveBayes) {
+                algorithm = new NaiveBayes();
+            }
+
+            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.LinearRegression) {
+                algorithm = new LinearRegression();
+            }
+
+            String[] options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
+            algorithm.setOptions(options);
+            algorithm.buildClassifier(new Instances("",new ArrayList<>(),19));
+
+            MachineLearningTrainingPlugin.logger.info("Model has been built!");
+            WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
+            classifierBuilt = true;
 
 /*            List<MongoWekaDTO> collectionList = new ArrayList<>();
 
