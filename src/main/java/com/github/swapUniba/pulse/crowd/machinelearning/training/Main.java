@@ -13,11 +13,11 @@ public class Main {
 
         List<Message> msgs = new ArrayList<>();
 
-        for (int i = 0; i < 300; i++) {
+        for (int i = 0; i < 100; i++) {
 
             Message msg = new Message();
             Random rndm = new Random();
-            int nTokens = rndm.nextInt(5) + 2;
+            int nTokens = rndm.nextInt(2) + 1;
 
             List<Token> tokens = new ArrayList<>();
 
@@ -33,17 +33,17 @@ public class Main {
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeature("token");
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("-R");
+        mlcfg.setAlgorithmParams("");
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
-
     }
 
     private static String getRandomString() {
-        char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        //char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+        char[] chars = "ab".toCharArray();
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
-        for (int i = 0; i < random.nextInt(10)+3; i++) {
+        for (int i = 0; i < random.nextInt(2)+1; i++) {
             char c = chars[random.nextInt(chars.length)];
             sb.append(c);
         }

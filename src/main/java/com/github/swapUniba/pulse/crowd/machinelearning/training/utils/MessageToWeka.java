@@ -49,10 +49,21 @@ public class MessageToWeka {
             inst.setDataset(result);
             List<String> wordsInMessage = getWordsFromMessage(m,feature);
 
+            //TODO: dove non c'è l'occorrenza devo mettere 0
             for (String word : wordsInMessage) {
                 int attrIndex = attributes.indexOf(new Attribute(word));
                 inst.setValue(attrIndex,1);
             }
+
+            for(Attribute attr : attributes) {
+                if (wordsInMessage.indexOf(attr.name()) == -1) {
+                    inst.setValue(attr,0);
+                }
+                else {
+                    inst.setValue(attr,1);
+                }
+            }
+
 
             Random rndm = new Random();
             int rn = rndm.nextInt(2);

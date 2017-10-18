@@ -53,6 +53,7 @@ public class TrainModel {
             MachineLearningTrainingPlugin.logger.info("Model has been built!");
             WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
             classifierBuilt = true;
+            System.out.println(algorithm.toString());
 
         }
         catch (Exception ex) {
