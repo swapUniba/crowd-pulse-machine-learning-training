@@ -19,7 +19,7 @@ public class Main {
 
             Message msg = new Message();
             Random rndm = new Random();
-            int nTokens = rndm.nextInt(2) + 1;
+            int nTokens = rndm.nextInt(3) + 1;
 
             List<Token> tokens = new ArrayList<>();
 
@@ -52,7 +52,7 @@ public class Main {
 
     private static String getRandomString() {
         //char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
-        char[] chars = "ab".toCharArray();
+        char[] chars = "abc".toCharArray();
         StringBuilder sb = new StringBuilder();
         Random random = new Random();
         for (int i = 0; i < random.nextInt(2)+1; i++) {

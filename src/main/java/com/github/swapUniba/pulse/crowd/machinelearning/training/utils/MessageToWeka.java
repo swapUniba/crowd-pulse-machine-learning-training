@@ -29,9 +29,7 @@ public class MessageToWeka {
             attributes.add(a);
         }
 
-        List<String> classValues = new ArrayList<>();
-        classValues.add("primo");
-        classValues.add("secondo");
+        List<String> classValues = getClassValues(messages);
         Attribute classAttr = new Attribute(classAttributeName,classValues);
         attributes.add(classAttr);
 
@@ -122,7 +120,7 @@ public class MessageToWeka {
         }
         List<String> classValues = new ArrayList<>();
         classValues.add("?");
-        Attribute classAttr = new Attribute("class",classValues);
+        Attribute classAttr = new Attribute("predictedClass",classValues);
         attributes.add(classAttr);
 
         Instance inst = new DenseInstance(attributes.size()); //nAttributes deve essere già scremato dagli id
@@ -136,6 +134,20 @@ public class MessageToWeka {
 
     }
 
+    private static List<String> getClassValues(List<Message> messages) {
 
+        List<String> result = new ArrayList<>();
+        List<String> classValues = new ArrayList<>();
+
+        for (Message m : messages) {
+            classValues.add(m.getParent());
+        }
+
+        Set<String> distClass = new HashSet<>(classValues);
+        result.addAll(distClass);
+
+        return result;
+
+    }
 
 }
