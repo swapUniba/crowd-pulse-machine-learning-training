@@ -4,14 +4,10 @@ import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.Feature;
-import java.io.*;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-import weka.core.converters.ArffSaver;
-
-import java.io.IOException;
 import java.util.*;
 
 public class MessageToWeka {
@@ -40,7 +36,6 @@ public class MessageToWeka {
         result = new Instances(modelName,attributes,10);
 
 
-
         boolean structureSaved = false;
 
         for (Message m : messages) {
@@ -49,12 +44,7 @@ public class MessageToWeka {
             inst.setDataset(result);
             List<String> wordsInMessage = getWordsFromMessage(m,feature);
 
-            //TODO: dove non c'è l'occorrenza devo mettere 0
-            for (String word : wordsInMessage) {
-                int attrIndex = attributes.indexOf(new Attribute(word));
-                inst.setValue(attrIndex,1);
-            }
-
+            //dove non c'è l'occorrenza devo mettere 0
             for(Attribute attr : attributes) {
                 if (wordsInMessage.indexOf(attr.name()) == -1) {
                     inst.setValue(attr,0);
@@ -64,17 +54,7 @@ public class MessageToWeka {
                 }
             }
 
-
-            Random rndm = new Random();
-            int rn = rndm.nextInt(2);
-            String pol = "";
-            if (rn > 0) {
-                pol = "m5s";
-            }
-            else {
-                pol = "pd";
-            }
-            inst.setValue(attributes.size()-1,pol);
+            inst.setValue(attributes.size()-1,m.getParent());
             result.add(inst);
 
             if (!structureSaved) {

@@ -25,6 +25,16 @@ public class Main {
                 tokens.add(new Token(getRandomString()));
             }
 
+            int rn = rndm.nextInt(2);
+            String pol = "";
+            if (rn > 0) {
+                pol = "m5s";
+            }
+            else {
+                pol = "pd";
+            }
+
+            msg.setParent(pol);
             msg.setTokens(tokens);
             msgs.add(msg);
         }
