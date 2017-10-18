@@ -36,7 +36,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
             @Override
             public void onCompleted() {
                 try {
-                    logger.error("COSTRUZIONE CLASSIFICATORE IN CORSO...");
+                    logger.info("COSTRUZIONE CLASSIFICATORE IN CORSO...");
                     TrainModel trainer = new TrainModel(machineLearningTrainingConfig,messages);
                     boolean classifierBuilt = trainer.RunTraining();
                     if (!classifierBuilt) {
