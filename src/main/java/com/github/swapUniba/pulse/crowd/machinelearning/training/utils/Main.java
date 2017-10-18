@@ -1,7 +1,9 @@
-package com.github.swapUniba.pulse.crowd.machinelearning.training;
+package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +41,7 @@ public class Main {
             msgs.add(msg);
         }
 
-        MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
+        MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeature("token");
         mlcfg.setModelName("modello");

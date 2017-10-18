@@ -1,6 +1,8 @@
-package com.github.swapUniba.pulse.crowd.machinelearning.training;
+package com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining;
 
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageToWeka;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.WekaModelHandler;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.Feature;
@@ -14,10 +16,10 @@ import java.util.List;
 
 public class TrainModel {
 
-    private MachineLearningTrainingConfig config;
+    private MachineLearningTrainingConfigDTO config;
     private List<Message> messages;
 
-    public TrainModel(MachineLearningTrainingConfig cfg, List<Message> msgs) {
+    public TrainModel(MachineLearningTrainingConfigDTO cfg, List<Message> msgs) {
         this.config = cfg;
         this.messages = msgs;
     }
@@ -58,6 +60,7 @@ public class TrainModel {
         }
         catch (Exception ex) {
             MachineLearningTrainingPlugin.logger.error(ex.toString());
+            ex.printStackTrace();
         }
 
         return classifierBuilt;

@@ -3,6 +3,8 @@ package com.github.swapUniba.pulse.crowd.machinelearning.training;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.spi.IPlugin;
 import com.github.frapontillo.pulse.util.PulseLogger;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 import org.apache.logging.log4j.Logger;
 import rx.Observable;
 import rx.Subscriber;
@@ -28,16 +30,26 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
 
     @Override
     protected Observable.Operator<Message, Message> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
-        return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
 
-            List<Message> messages = new ArrayList<>();
+        List<Message> messages = new ArrayList<>();
+        MachineLearningTrainingConfigDTO dto = new MachineLearningTrainingConfigDTO();
+        dto.setAlgorithm(machineLearningTrainingConfig.getAlgorithm());
+        dto.setAlgorithmParams(machineLearningTrainingConfig.getAlgorithmParams());
+        dto.setConstraints(machineLearningTrainingConfig.getConstraints());
+        dto.setFeature(machineLearningTrainingConfig.getFeature());
+        dto.setModelName(machineLearningTrainingConfig.getModelName());
+
+        return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
 
             //quando il flusso dei messaggi è finito costruisci il modello
             @Override
             public void onCompleted() {
                 try {
+
+                    logger.info(dto.getAlgorithm() + dto.getModelName());
+                    logger.info("N° messaggi in cache:" + messages.size());
                     logger.info("COSTRUZIONE CLASSIFICATORE IN CORSO...");
-                    TrainModel trainer = new TrainModel(machineLearningTrainingConfig,messages);
+                    TrainModel trainer = new TrainModel(dto,messages);
                     boolean classifierBuilt = trainer.RunTraining();
                     if (!classifierBuilt) {
                         logger.error("ERRORE: classificatore non costruito!");

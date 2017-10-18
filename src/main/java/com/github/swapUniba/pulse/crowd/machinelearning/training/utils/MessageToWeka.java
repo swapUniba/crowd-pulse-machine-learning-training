@@ -12,6 +12,8 @@ import java.util.*;
 
 public class MessageToWeka {
 
+    private static String classAttributeName = "predClass";
+
     public static Instances getInstancesFromMessages(List<Message> messages, Feature feature, String modelName) {
 
         Instances result = null;
@@ -28,13 +30,12 @@ public class MessageToWeka {
         }
 
         List<String> classValues = new ArrayList<>();
-        classValues.add("m5s");
-        classValues.add("pd");
-        Attribute classAttr = new Attribute("class",classValues);
+        classValues.add("primo");
+        classValues.add("secondo");
+        Attribute classAttr = new Attribute(classAttributeName,classValues);
         attributes.add(classAttr);
 
         result = new Instances(modelName,attributes,10);
-
 
         boolean structureSaved = false;
 
@@ -46,11 +47,14 @@ public class MessageToWeka {
 
             //dove non c'è l'occorrenza devo mettere 0
             for(Attribute attr : attributes) {
-                if (wordsInMessage.indexOf(attr.name()) == -1) {
-                    inst.setValue(attr,0);
-                }
-                else {
-                    inst.setValue(attr,1);
+
+                if(!attr.name().equalsIgnoreCase(classAttributeName)) {
+
+                    if (wordsInMessage.indexOf(attr.name()) == -1) {
+                        inst.setValue(attr, 0);
+                    } else {
+                        inst.setValue(attr, 1);
+                    }
                 }
             }
 
