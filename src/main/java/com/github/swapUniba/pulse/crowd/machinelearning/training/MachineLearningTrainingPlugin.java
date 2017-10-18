@@ -35,12 +35,19 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
             //quando il flusso dei messaggi è finito costruisci il modello
             @Override
             public void onCompleted() {
-
-                TrainModel trainer = new TrainModel(machineLearningTrainingConfig,messages);
-                boolean classifierBuilt = trainer.RunTraining();
-                if (!classifierBuilt) {
-                    logger.error("ERRORE: classificatore non costruito!");
+                try {
+                    logger.error("COSTRUZIONE CLASSIFICATORE IN CORSO...");
+                    TrainModel trainer = new TrainModel(machineLearningTrainingConfig,messages);
+                    boolean classifierBuilt = trainer.RunTraining();
+                    if (!classifierBuilt) {
+                        logger.error("ERRORE: classificatore non costruito!");
+                    }
                 }
+                catch(Exception ex) {
+                    System.out.println("ERRORE: " + ex.toString());
+                    logger.error("ERRORE: " + ex.toString());
+                }
+
                 subscriber.onCompleted();
 
             }
@@ -54,6 +61,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
             //memorizza tutti i messaggi in memoria o su file
             @Override
             public void onNext(Message message) {
+                logger.error("MESSAGGIO: " + message.toString());
                 messages.add(message);
                 subscriber.onNext(message);
             }
