@@ -44,15 +44,19 @@ public class MessageToWeka {
 
             for (String word : wordsInMessage) {
                 int attrIndex = attributes.indexOf(new Attribute(word));
-                if (attrIndex == -1) {
-                    System.out.println("CAZZ");
-                }
-                else {
-                    inst.setValue(attrIndex,1);
-                }
-
+                inst.setValue(attrIndex,1);
             }
 
+            Random rndm = new Random();
+            int rn = rndm.nextInt(2);
+            String pol = "";
+            if (rn > 0) {
+                pol = "m5s";
+            }
+            else {
+                pol = "pd";
+            }
+            inst.setValue(attributes.size()-1,pol);
             result.add(inst);
 
         }
