@@ -13,8 +13,13 @@ import weka.core.converters.ArffSaver;
  */
 public class WekaModelHandler {
 
-    public static final String curPath = System.getProperty("user.dir") + "//models//";
+    private static final String curPath = System.getProperty("user.dir") + "//models//";
 
+/*    public static String getModelsPath() throws IOException {
+         File directory = new File(".");
+         String curPath2 = System.getProperty(directory.getCanonicalPath() + File.separator + "models" + File.separator);
+         return curPath2;
+    }*/
 
     public static void SaveModel(String filename, Object predictiveModel) throws Exception {
 
@@ -30,7 +35,6 @@ public class WekaModelHandler {
         Classifier cls = (Classifier) weka.core.SerializationHelper.read(curPath + filename + ".model");
         return cls;
     }
-
 
     public static void SaveInstanceStructure(Instances insts, String filename) {
         System.out.println("PERCORSO MODELLI SALVATI: " + curPath);
