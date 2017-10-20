@@ -35,7 +35,8 @@ public class MessageToWeka {
 
         result = new Instances(modelName,attributes,10);
 
-        boolean structureSaved = false;
+        //SALVATAGGIO DELLA STRUTTURA!
+        WekaModelHandler.SaveInstanceStructure(result,modelName);
 
         for (Message m : messages) {
 
@@ -58,12 +59,6 @@ public class MessageToWeka {
 
             inst.setValue(attributes.size()-1,m.getParent());
             result.add(inst);
-
-            if (!structureSaved) {
-                //SALVATAGGIO DELLA STRUTTURA!
-                WekaModelHandler.SaveInstanceStructure(result,modelName);
-                structureSaved = true;
-            }
 
         }
 
