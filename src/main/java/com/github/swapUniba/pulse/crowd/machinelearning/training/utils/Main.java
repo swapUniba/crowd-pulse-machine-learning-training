@@ -45,7 +45,7 @@ public class Main {
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeature("token");
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("");
+        mlcfg.setAlgorithmParams("-R");
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }
