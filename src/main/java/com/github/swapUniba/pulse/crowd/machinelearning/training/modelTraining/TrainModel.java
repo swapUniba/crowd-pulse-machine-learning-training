@@ -5,7 +5,6 @@ import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLear
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageToWeka;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.WekaModelHandler;
-import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.Feature;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MLAlgorithmEnum;
 import weka.classifiers.AbstractClassifier;
 import weka.classifiers.bayes.NaiveBayes;
@@ -32,8 +31,7 @@ public class TrainModel {
         try {
 
             AbstractClassifier algorithm = null;
-            Instances instances = MessageToWeka.getInstancesFromMessages(messages, Feature.valueOf(config.getFeature().toUpperCase()),config.getModelName());
-
+            Instances instances = MessageToWeka.getInstancesFromMessages(messages, config.getFeatures(),config.getModelName());
 
             if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
                 algorithm = new J48();

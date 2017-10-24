@@ -5,7 +5,7 @@ public class MachineLearningTrainingConfigDTO {
     private String algorithm = "";
     private String algorithmParams = "";
     private String modelName = "";
-    private String feature = "";
+    private String[] features;
     private String constraints = "";
 
     public String getAlgorithm() {
@@ -32,19 +32,19 @@ public class MachineLearningTrainingConfigDTO {
         this.modelName = modelName;
     }
 
-    public String getFeature() {
-        return feature;
-    }
-
-    public void setFeature(String feature) {
-        this.feature = feature;
-    }
-
     public String getConstraints() {
         return constraints;
     }
 
     public void setConstraints(String constraints) {
         this.constraints = constraints;
+    }
+
+    public String[] getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(String[] features) {
+        this.features = features;
     }
 }

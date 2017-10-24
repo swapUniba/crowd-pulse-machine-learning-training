@@ -3,7 +3,7 @@ package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
-import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.Feature;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MessageFeatures;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
@@ -14,20 +14,19 @@ public class MessageToWeka {
 
     private static String classAttributeName = "predClass";
 
-    public static Instances getInstancesFromMessages(List<Message> messages, Feature feature, String modelName) {
+    public static Instances getInstancesFromMessages(List<Message> messages, String[] features, String modelName) {
 
         Instances result = null;
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
 
-        words = getWords(messages,feature);
+        List<Attribute> numericAttributes = getNumericAttributes(features);
+        List<Attribute> stringAttributes = getStringAttributes(messages,features);
+        List<Attribute> dateAttributes = getDateAttributes(features);
 
-        Set<String> uniqueWords = new HashSet(words); //effettua la distinct delle parole
-
-        for (String word : uniqueWords) {
-            Attribute a = new Attribute(word);
-            attributes.add(a);
-        }
+        attributes.addAll(numericAttributes);
+        attributes.addAll(stringAttributes);
+        attributes.addAll(dateAttributes);
 
         List<String> classValues = getClassValues(messages);
         Attribute classAttr = new Attribute(classAttributeName,classValues);
@@ -42,63 +41,267 @@ public class MessageToWeka {
 
             Instance inst = new DenseInstance(attributes.size()); //nAttributes deve essere già scremato dagli id
             inst.setDataset(result);
-            List<String> wordsInMessage = getWordsFromMessage(m,feature);
 
-            //dove non c'è l'occorrenza devo mettere 0
-            for(Attribute attr : attributes) {
+            for (String feature : features) {
 
-                if(!attr.name().equalsIgnoreCase(classAttributeName)) {
+                for(Attribute attr : attributes) { //dove non c'è l'occorrenza devo mettere 0
 
-                    if (wordsInMessage.indexOf(attr.name()) == -1) {
-                        inst.setValue(attr, 0);
-                    } else {
-                        inst.setValue(attr, 1);
+                    if(!attr.name().equalsIgnoreCase(classAttributeName)) {
+
+                        MessageFeatures msgFeature = MessageFeatures.valueOf(feature.toLowerCase());
+
+                        if (msgFeature == MessageFeatures.cluster_kmeans && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getClusterKmeans());
+                        }
+                        else if (msgFeature == MessageFeatures.sentiment && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getSentiment());
+                        }
+                        else if (msgFeature == MessageFeatures.number_cluster && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getCluster());
+                        }
+                        else if (msgFeature == MessageFeatures.language && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getLanguage());
+                        }
+                        else if (msgFeature == MessageFeatures.shares && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getShares());
+                        }
+                        else if (msgFeature == MessageFeatures.favs && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getFavs());
+                        }
+                        else if (msgFeature == MessageFeatures.latitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getLatitude());
+                        }
+                        else if (msgFeature == MessageFeatures.longitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getLongitude());
+                        }
+                        else if (msgFeature == MessageFeatures.text && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getText());
+                        }
+                        else if (msgFeature == MessageFeatures.source && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getSource());
+                        }
+                        else if (msgFeature == MessageFeatures.fromUser && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            inst.setValue(attr, m.getFromUser());
+                        }
+                        else {
+                            if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
+                                    || msgFeature == MessageFeatures.refUsers) && !Arrays.asList(features).contains(attr.name())) {
+
+                                List<String> wordsInMessage = getWordsFromMessage(m, MessageFeatures.valueOf(feature.toLowerCase()));
+                                if (wordsInMessage.indexOf(attr.name()) == -1) {
+                                    if (inst.value(attr) != 1) {
+                                        inst.setValue(attr, 0);
+                                    }
+                                } else {
+                                    inst.setValue(attr, 1);
+                                }
+                            }
+                        }
                     }
                 }
             }
-
-            inst.setValue(attributes.size()-1,m.getParent());
+            inst.setValue(classAttr,m.getParent());
             result.add(inst);
+        }
+
+        return result;
+    }
+
+    private static List<Attribute> getNumericAttributes(String[] features) {
+
+        List<Attribute> result = new ArrayList<>();
+
+        for (String feature : features) {
+
+            Attribute attr = null;
+            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
+            boolean consider = false;
+
+            if (curFeature == MessageFeatures.cluster_kmeans) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.number_cluster) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.number_cluster) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.sentiment) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.shares) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.favs) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.latitude) {
+                consider = true;
+            }
+            else if (curFeature == MessageFeatures.longitude) {
+                consider = true;
+            }
+
+            if (consider) {
+                attr = new Attribute(curFeature.toString().toLowerCase());
+            }
+
+            if (attr != null) {
+                result.add(attr);
+            }
 
         }
 
         return result;
     }
 
-    private static List<String> getWords(List<Message> messages, Feature feature) {
+    private static List<Attribute> getStringAttributes(List<Message> messages, String[] features) {
+
+        List<Attribute> result = new ArrayList<>();
+
+        for (String feature : features) {
+
+            Attribute attr = null;
+            int considerFeature = 0;
+            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
+
+            if (curFeature == MessageFeatures.text) {
+                considerFeature = 1;
+            }
+            else if (curFeature == MessageFeatures.source) {
+                considerFeature = 1;
+            }
+            else if (curFeature == MessageFeatures.tokens) {
+                considerFeature = 2;
+            }
+            else if (curFeature == MessageFeatures.tags) {
+                considerFeature = 2;
+            }
+            else if (curFeature == MessageFeatures.fromUser) {
+                considerFeature = 1;
+            }
+            else if (curFeature == MessageFeatures.parent) {
+                considerFeature = 1;
+            }
+            else if (curFeature == MessageFeatures.language) {
+                considerFeature = 1;
+            }
+            else if (curFeature == MessageFeatures.customTags) {
+                considerFeature = 2;
+            }
+            else if (curFeature == MessageFeatures.toUsers) {
+                considerFeature = 2;
+            }
+            else if (curFeature == MessageFeatures.refUsers) {
+                considerFeature = 2;
+            }
+
+            if (considerFeature == 1) { //Stringa semplice
+                List<String> attrValues = getWords(messages,curFeature);
+                attr = new Attribute(curFeature.toString(),attrValues);
+                result.add(attr);
+            }
+            else if (considerFeature == 2) { // Lista di stringhe
+                List<String> attrValues = getWords(messages,curFeature);
+                for (String attrVal : attrValues) {
+                    attr = new Attribute(attrVal);
+                    result.add(attr);
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+    private static List<Attribute> getDateAttributes(String[] features) {
+
+        List<Attribute> result = new ArrayList<>();
+
+        for (String feature : features) {
+
+            Attribute attr = null;
+            boolean considerFeature = false;
+            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
+
+            if (curFeature == MessageFeatures.date) {
+                considerFeature = true;
+            }
+
+            if (considerFeature) {
+                attr = new Attribute("dateTime","yyyy-MM-dd HH:mm");
+            }
+
+            if (attr != null) {
+                result.add(attr);
+            }
+
+        }
+
+        return result;
+    }
+
+    private static List<String> getWords(List<Message> messages, MessageFeatures feature) {
 
         List<String> result = new ArrayList<>();
 
         for (Message m : messages) {
-            result.addAll(getWordsFromMessage(m,feature));
+            Set<String> words = new HashSet(getWordsFromMessage(m,feature));
+            result.addAll(words);
         }
 
-        return result;
+        Set<String> words = new HashSet<>(result);
+        List<String> output = new ArrayList<>();
+        output.addAll(words);
+        return output;
 
     }
 
-    private static List<String> getWordsFromMessage(Message message, Feature feature) {
+    private static List<String> getWordsFromMessage(Message message, MessageFeatures feature) {
 
         List<String> result = new ArrayList<>();
 
-        if (feature == Feature.TOKEN) {
+        if (feature == MessageFeatures.tokens) {
             List<Token> tokens = message.getTokens();
             for (Token tk : tokens) {
                 result.add(tk.getText());
             }
         }
-        if (feature == Feature.TAG) {
+        if (feature == MessageFeatures.tags) {
             Set<Tag> tags = message.getTags();
             for (Tag tg : tags) {
                 result.add(tg.getText());
             }
+        }
+        if (feature == MessageFeatures.toUsers) {
+            List<String> users = message.getToUsers();
+            result.addAll(users);
+        }
+        if (feature == MessageFeatures.refUsers) {
+            List<String> users = message.getRefUsers();
+            result.addAll(users);
+        }
+        if (feature == MessageFeatures.text) {
+            result.add(message.getText());
+        }
+        if (feature == MessageFeatures.source) {
+            result.add(message.getSource());
+        }
+        if (feature == MessageFeatures.fromUser) {
+            result.add(message.getFromUser());
+        }
+        if (feature == MessageFeatures.parent) {
+            result.add(message.getParent());
+        }
+        if (feature == MessageFeatures.language) {
+            result.add(message.getLanguage());
         }
 
         return result;
 
     }
 
-    public static Instance getSingleInstanceFromMessage(Message message, Feature feature) {
+    public static Instance getSingleInstanceFromMessage(Message message, MessageFeatures feature) {
 
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();

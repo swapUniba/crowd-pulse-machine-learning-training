@@ -1,18 +1,18 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
+import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = false;
+        boolean testClassification = true;
 
         if (testClassification) {
             TestMessageClassification();
@@ -32,11 +32,19 @@ public class Main {
             Message msg = new Message();
             Random rndm = new Random();
             int nTokens = rndm.nextInt(3) + 1;
+            int nTags = rndm.nextInt(3) + 1;
 
             List<Token> tokens = new ArrayList<>();
+            Set<Tag> tags = new HashSet<>();
 
             for (int ii = 0; ii < nTokens;ii++) {
                 tokens.add(new Token(getRandomString()));
+            }
+
+            for (int ii = 0; ii < nTags;ii++) {
+                Tag tag = new Tag();
+                tag.setText("#" + getRandomString());
+                tags.add(tag);
             }
 
             int rn = rndm.nextInt(2);
@@ -48,14 +56,19 @@ public class Main {
                 pol = "pd";
             }
 
+            msg.setLatitude(rndm.nextDouble());
+            msg.setLongitude(rndm.nextDouble());
+            msg.setLanguage("en");
+            msg.setSentiment(rndm.nextDouble());
             msg.setParent(pol);
             msg.setTokens(tokens);
+            msg.setTags(tags);
             msgs.add(msg);
         }
 
         MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeature("token");
+        mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R");
         TrainModel trainer = new TrainModel(mlcfg,msgs);

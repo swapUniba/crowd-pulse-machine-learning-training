@@ -36,7 +36,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
         dto.setAlgorithm(machineLearningTrainingConfig.getAlgorithm());
         dto.setAlgorithmParams(machineLearningTrainingConfig.getAlgorithmParams());
         dto.setConstraints(machineLearningTrainingConfig.getConstraints());
-        dto.setFeature(machineLearningTrainingConfig.getFeature());
+        dto.setFeatures(machineLearningTrainingConfig.getFeatures());
         dto.setModelName(machineLearningTrainingConfig.getModelName());
 
         return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
