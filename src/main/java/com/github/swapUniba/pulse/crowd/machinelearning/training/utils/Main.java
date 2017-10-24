@@ -60,7 +60,10 @@ public class Main {
             msg.setLongitude(rndm.nextDouble());
             msg.setLanguage("en");
             msg.setSentiment(rndm.nextDouble());
-            msg.setParent(pol);
+            //msg.setParent(pol);
+            Tag tag = new Tag();
+            tag.setText("training_modello_class_" + pol);
+            tags.add(tag);
             msg.setTokens(tokens);
             msg.setTags(tags);
             msgs.add(msg);

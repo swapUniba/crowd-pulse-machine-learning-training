@@ -12,13 +12,15 @@ import java.util.*;
 
 public class MessageToWeka {
 
-    private static String classAttributeName = "predClass";
+    private static String classAttributeName = "training_";
 
-    public static Instances getInstancesFromMessages(List<Message> messages, String[] features, String modelName) {
+    public static Instances getInstancesFromMessages(List<Message> msgs, String[] features, String modelName) {
 
         Instances result = null;
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
+
+        List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi che non hanno la classe corretta
 
         List<Attribute> numericAttributes = getNumericAttributes(features);
         List<Attribute> stringAttributes = getStringAttributes(messages,features);
@@ -28,7 +30,7 @@ public class MessageToWeka {
         attributes.addAll(stringAttributes);
         attributes.addAll(dateAttributes);
 
-        List<String> classValues = getClassValues(messages);
+        List<String> classValues = getClassValues(messages,modelName);
         Attribute classAttr = new Attribute(classAttributeName,classValues);
         attributes.add(classAttr);
 
@@ -46,7 +48,7 @@ public class MessageToWeka {
 
                 for(Attribute attr : attributes) { //dove non c'è l'occorrenza devo mettere 0
 
-                    if(!attr.name().equalsIgnoreCase(classAttributeName)) {
+                    if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
 
                         MessageFeatures msgFeature = MessageFeatures.valueOf(feature.toLowerCase());
 
@@ -100,8 +102,12 @@ public class MessageToWeka {
                     }
                 }
             }
-            inst.setValue(classAttr,m.getParent());
-            result.add(inst);
+            String classValue = getMessageClassLabel(m,modelName);
+            if (!classValue.equalsIgnoreCase("")) {
+                inst.setValue(classAttr,classValue);
+                result.add(inst);
+            }
+
         }
 
         return result;
@@ -332,13 +338,19 @@ public class MessageToWeka {
 
     }
 
-    private static List<String> getClassValues(List<Message> messages) {
+    private static List<String> getClassValues(List<Message> messages, String modelName) {
 
         List<String> result = new ArrayList<>();
         List<String> classValues = new ArrayList<>();
 
         for (Message m : messages) {
-            classValues.add(m.getParent());
+
+            for (Tag tag : m.getTags()) {
+
+                if (tag.getText().toLowerCase().startsWith("training_" + modelName + "_class_")) {
+                    classValues.add(tag.getText());
+                }
+            }
         }
 
         Set<String> distClass = new HashSet<>(classValues);
@@ -348,4 +360,40 @@ public class MessageToWeka {
 
     }
 
+    private static List<Message> filterMessages(List<Message> messages, String modelName) {
+
+        List<Message> result = new ArrayList<>();
+        String classPattern = "training_" + modelName + "_class_";
+
+        for (Message msg : messages) {
+
+            for (Tag tag : msg.getTags()) {
+
+                if (tag.getText().toLowerCase().startsWith(classPattern.toLowerCase())) {
+
+                    result.add(msg);
+
+                }
+
+            }
+
+        }
+
+        return result;
+
+    }
+
+    private static String getMessageClassLabel(Message message, String modelName) {
+
+        String result = "";
+        String classPattern = "training_"+modelName+"_class_";
+        for (Tag tag : message.getTags()) {
+            if (tag.getText().toLowerCase().startsWith(classPattern.toLowerCase())) {
+                result = tag.getText().toLowerCase();
+                break;
+            }
+        }
+
+        return result;
+    }
 }
