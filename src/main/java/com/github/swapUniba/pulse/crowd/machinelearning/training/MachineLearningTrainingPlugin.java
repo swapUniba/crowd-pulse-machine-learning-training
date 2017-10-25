@@ -73,7 +73,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
             //memorizza tutti i messaggi in memoria o su file
             @Override
             public void onNext(Message message) {
-                logger.error("MESSAGGIO: " + message.toString());
+                logger.info("MESSAGGIO: " + message.toString());
                 messages.add(message);
                 subscriber.onNext(message);
             }
