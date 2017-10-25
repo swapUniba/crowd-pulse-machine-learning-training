@@ -12,7 +12,7 @@ import java.util.*;
 
 public class MessageToWeka {
 
-    private static String classAttributeName = "training_";
+    private static String classAttributeName = "predictedClass";
 
     public static Instances getInstancesFromMessages(List<Message> msgs, String[] features, String modelName) {
 
@@ -35,6 +35,7 @@ public class MessageToWeka {
         attributes.add(classAttr);
 
         result = new Instances(modelName,attributes,10);
+        result.setClassIndex(result.numAttributes() - 1);
 
         //SALVATAGGIO DELLA STRUTTURA!
         WekaModelHandler.SaveInstanceStructure(result,modelName);
@@ -109,6 +110,9 @@ public class MessageToWeka {
             }
 
         }
+
+        WekaModelHandler.saveFeatures(features,modelName);
+        WekaModelHandler.SaveTrainingSet(result,modelName);
 
         return result;
     }
