@@ -275,7 +275,7 @@ public class MessageToWeka {
         }
         if (feature == MessageFeatures.tags) {
             Set<Tag> tags = message.getTags();
-            for (Tag tg : tags) {
+            for (Tag tg : tags) { //ESCLUDE I TAG DI TRAINING E DI TESTING
                 if (!tg.getText().toLowerCase().startsWith("training_") && !tg.getText().toLowerCase().startsWith("testing_")) {
                     result.add(tg.getText());
                 }
