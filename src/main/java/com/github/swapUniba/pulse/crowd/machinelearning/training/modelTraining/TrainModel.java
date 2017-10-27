@@ -8,11 +8,17 @@ import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageTo
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.WekaModelHandler;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MLAlgorithmEnum;
 import weka.classifiers.AbstractClassifier;
+import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
 import weka.core.Instances;
+
+import java.util.ArrayList;
 import java.util.List;
+
+// http://weka.sourceforge.net/doc.dev/weka/classifiers/evaluation/Evaluation.html
+// opzioni per l'evaluation
 
 public class TrainModel {
 
@@ -55,6 +61,32 @@ public class TrainModel {
             WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
             classifierBuilt = true;
             System.out.println(algorithm.toString());
+
+            // +++++ EVALUATION +++++
+            try {
+                String[] evalOptions = weka.core.Utils.splitOptions(config.getEvaluation());
+                List<String> evalOpt = new ArrayList<>();
+                options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
+
+                for (String s : options) {
+                    evalOpt.add(s);
+                }
+                for (String s : evalOptions) {
+                    evalOpt.add(s);
+                }
+                evalOpt.add("-t"); // gli dico dove prendere il file del training set
+                evalOpt.add(WekaModelHandler.getModelPath(config.getModelName()));
+
+                String[] evalNewOpt = evalOpt.stream().toArray(String[]::new);
+                J48 newClass = new J48();
+                newClass.setOptions(options);
+                System.out.println(Evaluation.evaluateModel(newClass, evalNewOpt));
+
+            }
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("Errore nella valutazione...");
+            }
+            // +++++ END EVALUATION +++++
 
         }
         catch (Exception ex) {

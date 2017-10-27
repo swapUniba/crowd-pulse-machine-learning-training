@@ -149,4 +149,8 @@ public class WekaModelHandler {
 
     }
 
+    public static String getModelPath(String modelName) {
+        return curPath + modelName + "_training.arff";
+    }
+
 }

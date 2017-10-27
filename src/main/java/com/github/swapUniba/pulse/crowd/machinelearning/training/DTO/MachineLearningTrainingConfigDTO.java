@@ -7,6 +7,7 @@ public class MachineLearningTrainingConfigDTO {
     private String modelName = "";
     private String[] features;
     private String constraints = "";
+    private String evaluation = "";
 
     public String getAlgorithm() {
         return algorithm;
@@ -46,5 +47,13 @@ public class MachineLearningTrainingConfigDTO {
 
     public void setFeatures(String[] features) {
         this.features = features;
+    }
+
+    public String getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(String evaluation) {
+        this.evaluation = evaluation;
     }
 }

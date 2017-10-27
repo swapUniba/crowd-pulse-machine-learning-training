@@ -39,6 +39,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,Machine
         dto.setConstraints(machineLearningTrainingConfig.getConstraints());
         dto.setFeatures(machineLearningTrainingConfig.getFeatures());
         dto.setModelName(machineLearningTrainingConfig.getModelName());
+        dto.setEvaluation(machineLearningTrainingConfig.getEvalutation());
 
         return subscriber -> new SafeSubscriber<>(new Subscriber<Entity>() {
 
@@ -47,7 +48,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,Machine
                 try {
 
                     logger.info(dto.getAlgorithm() + dto.getModelName());
-                    logger.info("N° messaggi in cache:" + entities.size());
+                    logger.info("#messaggi in cache:" + entities.size());
                     logger.info("COSTRUZIONE CLASSIFICATORE IN CORSO...");
 
                     TrainModel trainer = new TrainModel(dto,entities);

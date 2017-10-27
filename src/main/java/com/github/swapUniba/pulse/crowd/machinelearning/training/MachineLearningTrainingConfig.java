@@ -12,6 +12,7 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
     private String modelName = "";
     private String[] features;
     private String constraints = "";
+    private String evalutation = "";
 
     @Override
     public MachineLearningTrainingConfig buildFromJsonElement(JsonElement jsonElement) {
@@ -61,5 +62,13 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
 
     public void setFeatures(String[] feature) {
         this.features = feature;
+    }
+
+    public String getEvalutation() {
+        return evalutation;
+    }
+
+    public void setEvalutation(String evalutation) {
+        this.evalutation = evalutation;
     }
 }

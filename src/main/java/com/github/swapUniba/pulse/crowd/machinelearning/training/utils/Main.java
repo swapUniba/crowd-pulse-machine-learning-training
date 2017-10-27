@@ -71,10 +71,11 @@ public class Main {
         }
 
         MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
-        mlcfg.setAlgorithm("NaiveBayes");
+        mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("");
+        mlcfg.setAlgorithmParams("-R");
+        mlcfg.setEvaluation("");
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }
