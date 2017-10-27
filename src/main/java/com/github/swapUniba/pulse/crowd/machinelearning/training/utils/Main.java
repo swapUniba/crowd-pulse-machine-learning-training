@@ -79,6 +79,52 @@ public class Main {
         trainer.RunTraining();
     }
 
+    private static void TestRegression() {
+        List<Entity> msgs = new ArrayList<>();
+
+        for (int i = 0; i < 200; i++) {
+
+            Message msg = new Message();
+            Random rndm = new Random();
+            int nTokens = rndm.nextInt(3) + 1;
+            int nTags = rndm.nextInt(3) + 1;
+
+            List<Token> tokens = new ArrayList<>();
+            Set<Tag> tags = new HashSet<>();
+
+            for (int ii = 0; ii < nTokens;ii++) {
+                tokens.add(new Token(getRandomString()));
+            }
+
+            for (int ii = 0; ii < nTags;ii++) {
+                Tag tag = new Tag();
+                tag.setText(getRandomString());
+                tags.add(tag);
+            }
+
+
+            msg.setLatitude(rndm.nextDouble());
+            msg.setLongitude(rndm.nextDouble());
+            msg.setLanguage("en");
+            msg.setSentiment(rndm.nextDouble());
+            //msg.setParent(pol);
+            Tag tag = new Tag();
+            tag.setText("training_modello_class_" + rndm.nextInt());
+            tags.add(tag);
+            msg.setTokens(tokens);
+            msg.setTags(tags);
+            msgs.add(msg);
+        }
+
+        MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
+        mlcfg.setAlgorithm("NaiveBayes");
+        mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setModelName("modello");
+        mlcfg.setAlgorithmParams("");
+        TrainModel trainer = new TrainModel(mlcfg,msgs);
+        trainer.RunTraining();
+    }
+
     private static String getRandomString() {
         //char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
         char[] chars = "abc".toCharArray();
