@@ -274,24 +274,28 @@ public class MessageToWeka {
         if (feature == MessageFeatures.tokens) {
             List<Token> tokens = message.getTokens();
             for (Token tk : tokens) {
-                result.add(tk.getText());
+                result.add("tk_" + tk.getText());
             }
         }
         if (feature == MessageFeatures.tags) {
             Set<Tag> tags = message.getTags();
             for (Tag tg : tags) { //ESCLUDE I TAG DI TRAINING E DI TESTING
                 if (!tg.getText().toLowerCase().startsWith("training_") && !tg.getText().toLowerCase().startsWith("testing_")) {
-                    result.add(tg.getText());
+                    result.add("tg_" + tg.getText());
                 }
             }
         }
         if (feature == MessageFeatures.toUsers) {
             List<String> users = message.getToUsers();
-            result.addAll(users);
+            for (String usr : users) {
+                users.add("tu_" + usr);
+            }
         }
         if (feature == MessageFeatures.refUsers) {
             List<String> users = message.getRefUsers();
-            result.addAll(users);
+            for (String usr : users) {
+                users.add("ru_" + usr);
+            }
         }
         if (feature == MessageFeatures.text) {
             result.add(message.getText());
