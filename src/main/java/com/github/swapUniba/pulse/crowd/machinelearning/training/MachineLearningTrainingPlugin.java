@@ -1,5 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training;
 
+import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.spi.IPlugin;
 import com.github.frapontillo.pulse.util.PulseLogger;
@@ -13,7 +14,7 @@ import rx.observers.SafeSubscriber;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,MachineLearningTrainingConfig> {
+public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,MachineLearningTrainingConfig> {
 
     private static final String PLUGIN_NAME = "machine-learning-training";
     public static final Logger logger = PulseLogger.getLogger(MachineLearningTrainingPlugin.class);
@@ -29,9 +30,9 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
     }
 
     @Override
-    protected Observable.Operator<Message, Message> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
+    protected Observable.Operator<Entity, Entity> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
 
-        List<Message> messages = new ArrayList<>();
+        List<Entity> entities = new ArrayList<>();
         MachineLearningTrainingConfigDTO dto = new MachineLearningTrainingConfigDTO();
         dto.setAlgorithm(machineLearningTrainingConfig.getAlgorithm());
         dto.setAlgorithmParams(machineLearningTrainingConfig.getAlgorithmParams());
@@ -39,17 +40,17 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
         dto.setFeatures(machineLearningTrainingConfig.getFeatures());
         dto.setModelName(machineLearningTrainingConfig.getModelName());
 
-        return subscriber -> new SafeSubscriber<>(new Subscriber<Message>() {
+        return subscriber -> new SafeSubscriber<>(new Subscriber<Entity>() {
 
-            //quando il flusso dei messaggi è finito costruisci il modello
             @Override
             public void onCompleted() {
                 try {
 
                     logger.info(dto.getAlgorithm() + dto.getModelName());
-                    logger.info("N° messaggi in cache:" + messages.size());
+                    logger.info("N° messaggi in cache:" + entities.size());
                     logger.info("COSTRUZIONE CLASSIFICATORE IN CORSO...");
-                    TrainModel trainer = new TrainModel(dto,messages);
+
+                    TrainModel trainer = new TrainModel(dto,entities);
                     boolean classifierBuilt = trainer.RunTraining();
                     if (!classifierBuilt) {
                         logger.error("ERRORE: classificatore non costruito!");
@@ -72,10 +73,10 @@ public class MachineLearningTrainingPlugin extends IPlugin<Message,Message,Machi
 
             //memorizza tutti i messaggi in memoria o su file
             @Override
-            public void onNext(Message message) {
-                logger.info("MESSAGGIO: " + message.toString());
-                messages.add(message);
-                subscriber.onNext(message);
+            public void onNext(Entity entity) {
+                logger.info("Entity: " + entity.toString());
+                entities.add(entity);
+                subscriber.onNext(entity);
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
+import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
@@ -25,7 +26,7 @@ public class Main {
 
     private static void TestMessageClassification() {
 
-        List<Message> msgs = new ArrayList<>();
+        List<Entity> msgs = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
 

@@ -1,5 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining;
 
+import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
@@ -16,11 +17,11 @@ import java.util.List;
 public class TrainModel {
 
     private MachineLearningTrainingConfigDTO config;
-    private List<Message> messages;
+    private List<Entity> entities;
 
-    public TrainModel(MachineLearningTrainingConfigDTO cfg, List<Message> msgs) {
+    public TrainModel(MachineLearningTrainingConfigDTO cfg, List<Entity> entities) {
         this.config = cfg;
-        this.messages = msgs;
+        this.entities = entities;
     }
 
 
@@ -31,7 +32,7 @@ public class TrainModel {
         try {
 
             AbstractClassifier algorithm = null;
-            Instances instances = MessageToWeka.getInstancesFromMessages(messages, config.getFeatures(),config.getModelName());
+            Instances instances = MessageToWeka.getInstancesFromEntities(entities, config.getFeatures(),config.getModelName());
 
             if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
                 algorithm = new J48();

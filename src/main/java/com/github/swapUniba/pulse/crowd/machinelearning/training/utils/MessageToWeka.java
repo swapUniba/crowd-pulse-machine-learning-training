@@ -1,8 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
-import com.github.frapontillo.pulse.crowd.data.entity.Message;
-import com.github.frapontillo.pulse.crowd.data.entity.Tag;
-import com.github.frapontillo.pulse.crowd.data.entity.Token;
+import com.github.frapontillo.pulse.crowd.data.entity.*;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MessageFeatures;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -14,7 +12,29 @@ public class MessageToWeka {
 
     private static String classAttributeName = "predictedClass";
 
-    public static Instances getInstancesFromMessages(List<Message> msgs, String[] features, String modelName) {
+    public static Instances getInstancesFromEntities(List<Entity> entities, String[] features, String modelName) {
+
+        Instances result = null;
+
+        if (entities.size() > 0) {
+
+            Entity entity = entities.get(0);
+            Class entityCls = entity.getClass();
+            if (entityCls == Message.class) {
+                List<? super Message> ent = entities;
+                List<Message> messages = (List<Message>)ent;
+                result = getInstancesFromMessages(messages,features,modelName);
+            }
+            else if (entityCls == Profile.class) {
+                // creare metodi di elaborazione per i profili
+            }
+
+        }
+
+        return result;
+    }
+
+    private static Instances getInstancesFromMessages(List<Message> msgs, String[] features, String modelName) {
 
         Instances result = null;
         List<String> words;
