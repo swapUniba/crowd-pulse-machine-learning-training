@@ -28,7 +28,7 @@ public class Main {
 
         List<Entity> msgs = new ArrayList<>();
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 200; i++) {
 
             Message msg = new Message();
             Random rndm = new Random();
@@ -44,7 +44,7 @@ public class Main {
 
             for (int ii = 0; ii < nTags;ii++) {
                 Tag tag = new Tag();
-                tag.setText("#" + getRandomString());
+                tag.setText(getRandomString());
                 tags.add(tag);
             }
 
@@ -74,7 +74,7 @@ public class Main {
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("-U");
+        mlcfg.setAlgorithmParams("-R");
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }
