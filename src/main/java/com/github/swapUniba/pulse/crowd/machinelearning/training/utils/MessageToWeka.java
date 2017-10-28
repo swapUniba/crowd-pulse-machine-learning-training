@@ -397,11 +397,15 @@ public class MessageToWeka {
 
         for (Message msg : messages) {
 
-            for (Tag tag : msg.getTags()) {
+            Set<Tag> msgTags = msg.getTags();
 
-                if (tag.getText().toLowerCase().startsWith(classPattern.toLowerCase())) {
+            if (msgTags != null) {
 
-                    result.add(msg);
+                for (Tag tag : msgTags) {
+
+                    if (tag.getText().toLowerCase().startsWith(classPattern.toLowerCase())) {
+                        result.add(msg);
+                    }
 
                 }
 
