@@ -75,7 +75,7 @@ public class Main {
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R -M 3");
-        mlcfg.setEvaluation("-split-percentage 70");
+        mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }
