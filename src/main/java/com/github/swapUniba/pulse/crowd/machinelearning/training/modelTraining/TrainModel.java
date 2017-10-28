@@ -86,6 +86,8 @@ public class TrainModel {
                 MachineLearningTrainingPlugin.logger.error("Errore nella valutazione..." + ex.toString());
             }
             // +++++ END EVALUATION +++++
+
+
             if (classifierBuilt) {
                 MachineLearningTrainingPlugin.logger.info("Model has been built!");
                 WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
