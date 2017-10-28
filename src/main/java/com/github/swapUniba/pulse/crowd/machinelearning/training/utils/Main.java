@@ -74,8 +74,8 @@ public class Main {
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("-R");
-        mlcfg.setEvaluation("");
+        mlcfg.setAlgorithmParams("-R -M 3");
+        mlcfg.setEvaluation("-split-percentage 70");
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }

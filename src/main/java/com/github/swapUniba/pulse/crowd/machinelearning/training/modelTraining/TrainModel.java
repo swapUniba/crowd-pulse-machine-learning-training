@@ -52,41 +52,38 @@ public class TrainModel {
                 algorithm = new LinearRegression();
             }
 
-            String[] options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
-            algorithm.setOptions(options);
             instances.setClassIndex(instances.numAttributes() - 1);
-            algorithm.buildClassifier(instances);
-
-            MachineLearningTrainingPlugin.logger.info("Model has been built!");
-            WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
-            classifierBuilt = true;
-            System.out.println(algorithm.toString());
 
             // +++++ EVALUATION +++++
             try {
                 String[] evalOptions = weka.core.Utils.splitOptions(config.getEvaluation());
                 List<String> evalOpt = new ArrayList<>();
-                options = weka.core.Utils.splitOptions(config.getAlgorithmParams());
+                String[] algorithmOptions = weka.core.Utils.splitOptions(config.getAlgorithmParams());
 
-                for (String s : options) {
+                for (String s : algorithmOptions) { //aggiungo le opzioni dell'algoritmo di class.
                     evalOpt.add(s);
                 }
-                for (String s : evalOptions) {
+                for (String s : evalOptions) { // aggiungo le opzioni per la valutazione (-x 10 per il 10FCV, etc)
                     evalOpt.add(s);
                 }
                 evalOpt.add("-t"); // gli dico dove prendere il file del training set
                 evalOpt.add(WekaModelHandler.getModelPath(config.getModelName()));
-
                 String[] evalNewOpt = evalOpt.stream().toArray(String[]::new);
-                J48 newClass = new J48();
-                newClass.setOptions(options);
-                System.out.println(Evaluation.evaluateModel(newClass, evalNewOpt));
 
+                String evaluationOutput = Evaluation.evaluateModel(algorithm, evalNewOpt);
+
+                System.out.println(evaluationOutput);
+                classifierBuilt = true;
+                System.out.println("");
             }
             catch (Exception ex) {
-                MachineLearningTrainingPlugin.logger.error("Errore nella valutazione...");
+                MachineLearningTrainingPlugin.logger.error("Errore nella valutazione..." + ex.toString());
             }
             // +++++ END EVALUATION +++++
+            if (classifierBuilt) {
+                MachineLearningTrainingPlugin.logger.info("Model has been built!");
+                WekaModelHandler.SaveModel(config.getModelName(), algorithm); //salvare il modello con il suo nome
+            }
 
         }
         catch (Exception ex) {
