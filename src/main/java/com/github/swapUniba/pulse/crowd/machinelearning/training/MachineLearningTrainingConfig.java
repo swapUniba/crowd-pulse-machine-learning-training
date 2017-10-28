@@ -11,7 +11,6 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
     private String algorithmParams = "";
     private String modelName = "";
     private String[] features;
-    private String constraints = "";
     private String evaluation = "";
     private boolean printFile = false;
 
@@ -47,14 +46,6 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
 
     public void setModelName(String modelName) {
         this.modelName = modelName;
-    }
-
-    public String getConstraints() {
-        return constraints;
-    }
-
-    public void setConstraints(String constraints) {
-        this.constraints = constraints;
     }
 
     public String[] getFeatures() {
