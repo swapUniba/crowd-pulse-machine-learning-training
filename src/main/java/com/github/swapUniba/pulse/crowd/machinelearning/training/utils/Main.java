@@ -72,6 +72,7 @@ public class Main {
         }
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
+        mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");

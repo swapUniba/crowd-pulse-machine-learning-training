@@ -74,6 +74,11 @@ public class TrainModel {
                 String evaluationOutput = Evaluation.evaluateModel(algorithm, evalNewOpt);
 
                 System.out.println(evaluationOutput);
+
+                if (config.isPrintFile()) {
+                    WekaModelHandler.writeOutputFile(evaluationOutput,config.getModelName());
+                }
+
                 classifierBuilt = true;
                 System.out.println("");
             }

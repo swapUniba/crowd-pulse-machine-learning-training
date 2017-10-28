@@ -153,4 +153,12 @@ public class WekaModelHandler {
         return curPath + modelName + "_training.arff";
     }
 
+    public static void writeOutputFile(String content, String modelName) {
+        try(  PrintWriter out = new PrintWriter( curPath + modelName + "_training_output.txt")  ){
+            out.println( content );
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
