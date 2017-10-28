@@ -18,13 +18,8 @@ import weka.core.converters.ArffSaver;
  */
 public class WekaModelHandler {
 
-    private static final String curPath = System.getProperty("user.dir") + "//models//";
+    private static final String curPath = System.getProperty("user.dir") + File.separator + "models" + File.separator;
 
-/*    public static String getModelsPath() throws IOException {
-         File directory = new File(".");
-         String curPath2 = System.getProperty(directory.getCanonicalPath() + File.separator + "models" + File.separator);
-         return curPath2;
-    }*/
 
     public static void SaveModel(String filename, Object predictiveModel) throws Exception {
 
