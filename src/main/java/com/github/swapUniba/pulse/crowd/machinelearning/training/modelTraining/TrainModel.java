@@ -3,6 +3,7 @@ package com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining;
 import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageToWeka;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.WekaModelHandler;
@@ -22,10 +23,10 @@ import java.util.List;
 
 public class TrainModel {
 
-    private MachineLearningTrainingConfigDTO config;
+    private MachineLearningTrainingConfig config;
     private List<Entity> entities;
 
-    public TrainModel(MachineLearningTrainingConfigDTO cfg, List<Entity> entities) {
+    public TrainModel(MachineLearningTrainingConfig cfg, List<Entity> entities) {
         this.config = cfg;
         this.entities = entities;
     }

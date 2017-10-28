@@ -33,13 +33,13 @@ public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,Machine
     protected Observable.Operator<Entity, Entity> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
 
         List<Entity> entities = new ArrayList<>();
-        MachineLearningTrainingConfigDTO dto = new MachineLearningTrainingConfigDTO();
+        /*MachineLearningTrainingConfigDTO dto = new MachineLearningTrainingConfigDTO();
         dto.setAlgorithm(machineLearningTrainingConfig.getAlgorithm());
         dto.setAlgorithmParams(machineLearningTrainingConfig.getAlgorithmParams());
         dto.setConstraints(machineLearningTrainingConfig.getConstraints());
         dto.setFeatures(machineLearningTrainingConfig.getFeatures());
         dto.setModelName(machineLearningTrainingConfig.getModelName());
-        dto.setEvaluation(machineLearningTrainingConfig.getEvalutation());
+        dto.setEvaluation(machineLearningTrainingConfig.getEvalutation());*/
 
         return subscriber -> new SafeSubscriber<>(new Subscriber<Entity>() {
 
@@ -47,11 +47,11 @@ public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,Machine
             public void onCompleted() {
                 try {
 
-                    logger.info(dto.getAlgorithm() + dto.getModelName());
+                    logger.info(machineLearningTrainingConfig.getAlgorithm() + machineLearningTrainingConfig.getModelName());
                     logger.info("#messaggi in cache:" + entities.size());
                     logger.info("COSTRUZIONE CLASSIFICATORE IN CORSO...");
 
-                    TrainModel trainer = new TrainModel(dto,entities);
+                    TrainModel trainer = new TrainModel(machineLearningTrainingConfig,entities);
                     boolean classifierBuilt = trainer.RunTraining();
                     if (!classifierBuilt) {
                         logger.error("ERRORE: classificatore non costruito!");

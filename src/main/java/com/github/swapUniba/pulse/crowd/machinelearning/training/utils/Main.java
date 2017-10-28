@@ -5,6 +5,7 @@ import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 
 import java.util.*;
@@ -70,7 +71,7 @@ public class Main {
             msgs.add(msg);
         }
 
-        MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
+        MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
@@ -117,7 +118,7 @@ public class Main {
             msgs.add(msg);
         }
 
-        MachineLearningTrainingConfigDTO mlcfg = new MachineLearningTrainingConfigDTO();
+        MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setAlgorithm("NaiveBayes");
         mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
