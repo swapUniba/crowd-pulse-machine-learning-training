@@ -259,7 +259,7 @@ public class MessageToWeka {
             }
 
             if (considerFeature) {
-                attr = new Attribute("dateTime","yyyy-MM-dd HH:mm");
+                attr = new Attribute("dateTime","yyyy-MM-dd HH:mm:ss");
             }
 
             if (attr != null) {
