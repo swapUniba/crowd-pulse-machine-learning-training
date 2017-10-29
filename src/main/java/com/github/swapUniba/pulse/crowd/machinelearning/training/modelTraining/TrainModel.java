@@ -1,8 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining;
 
 import com.github.frapontillo.pulse.crowd.data.entity.Entity;
-import com.github.frapontillo.pulse.crowd.data.entity.Message;
-import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.MessageToWeka;

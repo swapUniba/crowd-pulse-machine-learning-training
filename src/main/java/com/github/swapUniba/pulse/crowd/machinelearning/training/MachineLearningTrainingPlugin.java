@@ -4,7 +4,6 @@ import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.spi.IPlugin;
 import com.github.frapontillo.pulse.util.PulseLogger;
-import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 import org.apache.logging.log4j.Logger;
 import rx.Observable;
@@ -33,13 +32,7 @@ public class MachineLearningTrainingPlugin extends IPlugin<Entity,Entity,Machine
     protected Observable.Operator<Entity, Entity> getOperator(MachineLearningTrainingConfig machineLearningTrainingConfig) {
 
         List<Entity> entities = new ArrayList<>();
-        /*MachineLearningTrainingConfigDTO dto = new MachineLearningTrainingConfigDTO();
-        dto.setAlgorithm(machineLearningTrainingConfig.getAlgorithm());
-        dto.setAlgorithmParams(machineLearningTrainingConfig.getAlgorithmParams());
-        dto.setConstraints(machineLearningTrainingConfig.getConstraints());
-        dto.setFeatures(machineLearningTrainingConfig.getFeatures());
-        dto.setModelName(machineLearningTrainingConfig.getModelName());
-        dto.setEvaluation(machineLearningTrainingConfig.getEvalutation());*/
+
 
         return subscriber -> new SafeSubscriber<>(new Subscriber<Entity>() {
 
