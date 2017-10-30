@@ -294,14 +294,18 @@ public class MessageToWeka {
         if (feature == MessageFeatures.tokens) {
             List<Token> tokens = message.getTokens();
             for (Token tk : tokens) {
-                result.add("tk_" + tk.getText());
+                if (!tk.isStopWord()) {
+                    result.add("tk_" + tk.getText());
+                }
             }
         }
         if (feature == MessageFeatures.tags) {
             Set<Tag> tags = message.getTags();
             for (Tag tg : tags) { //ESCLUDE I TAG DI TRAINING E DI TESTING
-                if (!tg.getText().toLowerCase().startsWith("training_") && !tg.getText().toLowerCase().startsWith("testing_")) {
-                    result.add("tg_" + tg.getText());
+                if (!tg.isStopWord()) {
+                    if (!tg.getText().toLowerCase().startsWith("training_") && !tg.getText().toLowerCase().startsWith("testing_")) {
+                        result.add("tg_" + tg.getText());
+                    }
                 }
             }
         }
