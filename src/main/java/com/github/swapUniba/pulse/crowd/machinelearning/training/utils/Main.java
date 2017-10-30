@@ -13,13 +13,13 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = true;
+        boolean testClassification = false;
 
         if (testClassification) {
             TestMessageClassification();
         }
         else {
-            //TestRegression();
+            TestRegression();
         }
     }
 
@@ -64,8 +64,9 @@ public class Main {
             msg.setParent(pol);
             msg.setFavs(rndm.nextInt(20));
             msg.setShares(rndm.nextInt(20));
+            msg.setFromUser(getRandomString());
             Tag tag = new Tag();
-            tag.setText("training_regressione_class_" + pol);
+            tag.setText("training_modello_class_" + pol);
             tags.add(tag);
             msg.setTokens(tokens);
             msg.setTags(tags);
@@ -74,10 +75,10 @@ public class Main {
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
-        mlcfg.setAlgorithm("LinearRegression");
+        mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
-        mlcfg.setModelName("regressione");
-        mlcfg.setAlgorithmParams("");
+        mlcfg.setModelName("modello");
+        mlcfg.setAlgorithmParams("-R");
         mlcfg.setRegressionAttribute("favs");
         mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
@@ -85,6 +86,7 @@ public class Main {
     }
 
     private static void TestRegression() {
+
         List<Entity> msgs = new ArrayList<>();
 
         for (int i = 0; i < 200; i++) {
@@ -107,14 +109,25 @@ public class Main {
                 tags.add(tag);
             }
 
+            int rn = rndm.nextInt(2);
+            String pol = "";
+            if (rn > 0) {
+                pol = "m5s";
+            }
+            else {
+                pol = "pd";
+            }
 
             msg.setLatitude(rndm.nextDouble());
             msg.setLongitude(rndm.nextDouble());
             msg.setLanguage("en");
             msg.setSentiment(rndm.nextDouble());
-            //msg.setParent(pol);
+            msg.setParent(pol);
+            msg.setFavs(rndm.nextInt(20));
+            msg.setShares(rndm.nextInt(20));
+            msg.setFromUser(getRandomString());
             Tag tag = new Tag();
-            tag.setText("training_modello_class_" + rndm.nextInt());
+            tag.setText("training_regressione_class_" + pol);
             tags.add(tag);
             msg.setTokens(tokens);
             msg.setTags(tags);
@@ -122,10 +135,13 @@ public class Main {
         }
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
-        mlcfg.setAlgorithm("NaiveBayes");
-        mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
-        mlcfg.setModelName("modello");
+        mlcfg.setPrintFile(true);
+        mlcfg.setAlgorithm("LinearRegression");
+        mlcfg.setFeatures(new String[]{"favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setModelName("regressione");
         mlcfg.setAlgorithmParams("");
+        mlcfg.setRegressionAttribute("favs");
+        mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }

@@ -35,13 +35,27 @@ public class MessageToWeka {
         return result;
     }
 
-    private static Instances getInstancesFromMessages(List<Message> msgs, String[] features, String modelName) {
+    private static Instances getInstancesFromMessages(List<Message> msgs, String[] fts, String modelName) {
 
         Instances result = null;
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
 
         List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi che non hanno la classe corretta
+
+        //bonifica i nomi delle feature prima di avviare il parsing
+        List<String> featList = new ArrayList<>();
+        for (String f : fts) {
+            for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
+                if (ft.name().toLowerCase().startsWith(f.toLowerCase())) {
+                    featList.add(ft.name());
+                    break;
+                }
+            }
+        }
+
+        String[] features = new String[featList.size()];
+        features = featList.toArray(features);
 
         List<Attribute> numericAttributes = getNumericAttributes(features);
         List<Attribute> stringAttributes = getStringAttributes(messages,features);
@@ -72,14 +86,7 @@ public class MessageToWeka {
 
                     if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
 
-                        MessageFeatures msgFeature = null;//MessageFeatures.valueOf(feature.toLowerCase());
-
-                        for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
-                            if (ft.name().toLowerCase().startsWith(feature.toLowerCase())) {
-                                msgFeature = ft;
-                                break;
-                            }
-                        }
+                        MessageFeatures msgFeature = MessageFeatures.valueOf(feature);
 
                         if (msgFeature == null) {
                             MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature  + " non riconosciuta!");
