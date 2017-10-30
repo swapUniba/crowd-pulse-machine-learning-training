@@ -1,6 +1,7 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
 import com.github.frapontillo.pulse.crowd.data.entity.*;
+import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingPlugin;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.utils.enums.MessageFeatures;
 import weka.core.Attribute;
 import weka.core.DenseInstance;
@@ -143,41 +144,55 @@ public class MessageToWeka {
 
         for (String feature : features) {
 
-            Attribute attr = null;
-            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
-            boolean consider = false;
+            try {
 
-            if (curFeature == MessageFeatures.cluster_kmeans) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.number_cluster) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.number_cluster) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.sentiment) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.shares) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.favs) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.latitude) {
-                consider = true;
-            }
-            else if (curFeature == MessageFeatures.longitude) {
-                consider = true;
-            }
+                Attribute attr = null;
+                MessageFeatures curFeature = null;
+                boolean consider = false;
 
-            if (consider) {
-                attr = new Attribute(curFeature.toString().toLowerCase());
-            }
+                for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
+                    if (ft.name().toLowerCase().startsWith(feature.toLowerCase())) {
+                        curFeature = ft;
+                        break;
+                    }
+                }
 
-            if (attr != null) {
-                result.add(attr);
+                if (curFeature == MessageFeatures.cluster_kmeans) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.number_cluster) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.number_cluster) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.sentiment) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.shares) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.favs) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.latitude) {
+                    consider = true;
+                }
+                else if (curFeature == MessageFeatures.longitude) {
+                    consider = true;
+                }
+
+                if (consider) {
+                    attr = new Attribute(curFeature.toString().toLowerCase());
+                }
+
+                if (attr != null) {
+                    result.add(attr);
+                }
+
+            }
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature + " non riconosciuta!");
             }
 
         }
@@ -191,52 +206,66 @@ public class MessageToWeka {
 
         for (String feature : features) {
 
-            Attribute attr = null;
-            int considerFeature = 0;
-            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
+            try {
 
-            if (curFeature == MessageFeatures.text) {
-                considerFeature = 1;
-            }
-            else if (curFeature == MessageFeatures.source) {
-                considerFeature = 1;
-            }
-            else if (curFeature == MessageFeatures.tokens) {
-                considerFeature = 2;
-            }
-            else if (curFeature == MessageFeatures.tags) {
-                considerFeature = 2;
-            }
-            else if (curFeature == MessageFeatures.fromUser) {
-                considerFeature = 1;
-            }
-            else if (curFeature == MessageFeatures.parent) {
-                considerFeature = 1;
-            }
-            else if (curFeature == MessageFeatures.language) {
-                considerFeature = 1;
-            }
-            else if (curFeature == MessageFeatures.customTags) {
-                considerFeature = 2;
-            }
-            else if (curFeature == MessageFeatures.toUsers) {
-                considerFeature = 2;
-            }
-            else if (curFeature == MessageFeatures.refUsers) {
-                considerFeature = 2;
-            }
+                Attribute attr = null;
+                int considerFeature = 0;
+                MessageFeatures curFeature = null; //MessageFeatures.valueOf(feature.toLowerCase());
 
-            if (considerFeature == 1) { //Stringa semplice
-                List<String> attrValues = getWords(messages,curFeature);
-                attr = new Attribute(curFeature.toString(),attrValues);
-                result.add(attr);
-            }
-            else if (considerFeature == 2) { // Lista di stringhe
-                List<String> attrValues = getWords(messages,curFeature);
-                for (String attrVal : attrValues) {
-                    attr = new Attribute(attrVal);
+                for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
+                    if (ft.name().toLowerCase().startsWith(feature.toLowerCase())) {
+                        curFeature = ft;
+                        break;
+                    }
+                }
+
+                if (curFeature == MessageFeatures.text) {
+                    considerFeature = 1;
+                }
+                else if (curFeature == MessageFeatures.source) {
+                    considerFeature = 1;
+                }
+                else if (curFeature == MessageFeatures.tokens) {
+                    considerFeature = 2;
+                }
+                else if (curFeature == MessageFeatures.tags) {
+                    considerFeature = 2;
+                }
+                else if (curFeature == MessageFeatures.fromUser) {
+                    considerFeature = 1;
+                }
+                else if (curFeature == MessageFeatures.parent) {
+                    considerFeature = 1;
+                }
+                else if (curFeature == MessageFeatures.language) {
+                    considerFeature = 1;
+                }
+                else if (curFeature == MessageFeatures.customTags) {
+                    considerFeature = 2;
+                }
+                else if (curFeature == MessageFeatures.toUsers) {
+                    considerFeature = 2;
+                }
+                else if (curFeature == MessageFeatures.refUsers) {
+                    considerFeature = 2;
+                }
+
+                if (considerFeature == 1) { //Stringa semplice
+                    List<String> attrValues = getWords(messages,curFeature);
+                    attr = new Attribute(curFeature.toString(),attrValues);
                     result.add(attr);
                 }
+                else if (considerFeature == 2) { // Lista di stringhe
+                    List<String> attrValues = getWords(messages,curFeature);
+                    for (String attrVal : attrValues) {
+                        attr = new Attribute(attrVal);
+                        result.add(attr);
+                    }
+                }
+            }
+
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature + " non riconosciuta!");
             }
 
         }
@@ -250,20 +279,32 @@ public class MessageToWeka {
 
         for (String feature : features) {
 
-            Attribute attr = null;
-            boolean considerFeature = false;
-            MessageFeatures curFeature = MessageFeatures.valueOf(feature.toLowerCase());
+            try {
+                Attribute attr = null;
+                boolean considerFeature = false;
+                MessageFeatures curFeature = null;//MessageFeatures.valueOf(feature.toLowerCase());
 
-            if (curFeature == MessageFeatures.date) {
-                considerFeature = true;
+                for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
+                    if (ft.name().toLowerCase().startsWith(feature.toLowerCase())) {
+                        curFeature = ft;
+                        break;
+                    }
+                }
+
+                if (curFeature == MessageFeatures.date) {
+                    considerFeature = true;
+                }
+
+                if (considerFeature) {
+                    attr = new Attribute("dateTime","yyyy-MM-dd HH:mm:ss");
+                }
+
+                if (attr != null) {
+                    result.add(attr);
+                }
             }
-
-            if (considerFeature) {
-                attr = new Attribute("dateTime","yyyy-MM-dd HH:mm:ss");
-            }
-
-            if (attr != null) {
-                result.add(attr);
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature + " non riconosciuta!");
             }
 
         }

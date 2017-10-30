@@ -4,7 +4,6 @@ import com.github.frapontillo.pulse.crowd.data.entity.Entity;
 import com.github.frapontillo.pulse.crowd.data.entity.Message;
 import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
-import com.github.swapUniba.pulse.crowd.machinelearning.training.DTO.MachineLearningTrainingConfigDTO;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 
@@ -74,7 +73,7 @@ public class Main {
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"tokens","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setFeatures(new String[]{"fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R -M 3");
         mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
