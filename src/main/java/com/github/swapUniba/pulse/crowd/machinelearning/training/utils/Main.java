@@ -61,9 +61,11 @@ public class Main {
             msg.setLongitude(rndm.nextDouble());
             msg.setLanguage("en");
             msg.setSentiment(rndm.nextDouble());
-            //msg.setParent(pol);
+            msg.setParent(pol);
+            msg.setFavs(rndm.nextInt(20));
+            msg.setShares(rndm.nextInt(20));
             Tag tag = new Tag();
-            tag.setText("training_modello_class_" + pol);
+            tag.setText("training_regressione_class_" + pol);
             tags.add(tag);
             msg.setTokens(tokens);
             msg.setTags(tags);
@@ -72,10 +74,11 @@ public class Main {
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
-        mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"fromuser","token","tags","sentiment","language","latitude","longitude"});
-        mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("-R -M 3");
+        mlcfg.setAlgorithm("LinearRegression");
+        mlcfg.setFeatures(new String[]{"favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setModelName("regressione");
+        mlcfg.setAlgorithmParams("");
+        mlcfg.setRegressionAttribute("favs");
         mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();

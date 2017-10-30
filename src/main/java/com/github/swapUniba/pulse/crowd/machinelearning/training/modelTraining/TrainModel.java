@@ -11,6 +11,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
+import weka.core.Attribute;
 import weka.core.Instances;
 
 import java.util.ArrayList;
@@ -49,9 +50,17 @@ public class TrainModel {
 
             if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.LinearRegression) {
                 algorithm = new LinearRegression();
+                Attribute regrAttribute = instances.attribute(config.getRegressionAttribute());
+                instances.setClassIndex(regrAttribute.index());
             }
 
-            instances.setClassIndex(instances.numAttributes() - 1);
+            if (instances.classIndex() == -1) {
+                instances.setClassIndex(instances.numAttributes() - 1);
+            }
+
+            WekaModelHandler.saveFeatures(config.getFeatures(),config.getModelName());
+            WekaModelHandler.SaveTrainingSet(instances,config.getModelName());
+            WekaModelHandler.SaveInstanceStructure(instances,config.getModelName());
 
             // +++++ EVALUATION +++++
             try {
@@ -67,6 +76,8 @@ public class TrainModel {
                 }
                 evalOpt.add("-t"); // gli dico dove prendere il file del training set
                 evalOpt.add(WekaModelHandler.getModelPath(config.getModelName()));
+                evalOpt.add("-c"); // imposto l'attributo di classe
+                evalOpt.add(Integer.toString(instances.classIndex() + 1)); // in questo caso l'indice è 1-based!
                 String[] evalNewOpt = evalOpt.stream().toArray(String[]::new);
 
                 String evaluationOutput = Evaluation.evaluateModel(algorithm, evalNewOpt);

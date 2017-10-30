@@ -12,6 +12,7 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
     private String modelName = "";
     private String[] features;
     private String evaluation = "";
+    private String regressionAttribute = "";
     private boolean printFile = false;
 
     @Override
@@ -71,5 +72,13 @@ public class MachineLearningTrainingConfig implements IPluginConfig<MachineLearn
 
     public void setEvaluation(String evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public String getRegressionAttribute() {
+        return regressionAttribute;
+    }
+
+    public void setRegressionAttribute(String regressionAttribute) {
+        this.regressionAttribute = regressionAttribute;
     }
 }

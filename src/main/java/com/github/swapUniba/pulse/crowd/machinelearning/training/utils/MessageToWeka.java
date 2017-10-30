@@ -56,10 +56,10 @@ public class MessageToWeka {
         attributes.add(classAttr);
 
         result = new Instances(modelName,attributes,10);
-        result.setClassIndex(result.numAttributes() - 1);
+        //result.setClassIndex(result.numAttributes() - 1);
 
         //SALVATAGGIO DELLA STRUTTURA!
-        WekaModelHandler.SaveInstanceStructure(result,modelName);
+        //WekaModelHandler.SaveInstanceStructure(result,modelName);
 
         for (Message m : messages) {
 
@@ -72,7 +72,19 @@ public class MessageToWeka {
 
                     if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
 
-                        MessageFeatures msgFeature = MessageFeatures.valueOf(feature.toLowerCase());
+                        MessageFeatures msgFeature = null;//MessageFeatures.valueOf(feature.toLowerCase());
+
+                        for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
+                            if (ft.name().toLowerCase().startsWith(feature.toLowerCase())) {
+                                msgFeature = ft;
+                                break;
+                            }
+                        }
+
+                        if (msgFeature == null) {
+                            MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature  + " non riconosciuta!");
+                            continue;
+                        }
 
                         if (msgFeature == MessageFeatures.cluster_kmeans && attr.name().equalsIgnoreCase(msgFeature.toString())) {
                             inst.setValue(attr, m.getClusterKmeans());
@@ -111,7 +123,7 @@ public class MessageToWeka {
                             if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
                                     || msgFeature == MessageFeatures.refUsers) && !Arrays.asList(features).contains(attr.name())) {
 
-                                List<String> wordsInMessage = getWordsFromMessage(m, MessageFeatures.valueOf(feature.toLowerCase()));
+                                List<String> wordsInMessage = getWordsFromMessage(m, msgFeature);
                                 if (wordsInMessage.indexOf(attr.name()) == -1) {
                                     if (inst.value(attr) != 1) {
                                         inst.setValue(attr, 0);
@@ -131,9 +143,6 @@ public class MessageToWeka {
             }
 
         }
-
-        WekaModelHandler.saveFeatures(features,modelName);
-        WekaModelHandler.SaveTrainingSet(result,modelName);
 
         return result;
     }
