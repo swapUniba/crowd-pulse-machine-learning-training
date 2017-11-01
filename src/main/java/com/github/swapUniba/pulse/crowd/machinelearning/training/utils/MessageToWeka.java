@@ -46,6 +46,7 @@ public class MessageToWeka {
 
         List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi che non hanno la classe corretta
 
+        //TODO: aggiungere features non codificate, trattandole come token, via reflection
         //bonifica i nomi delle feature prima di avviare il parsing
         List<String> featList = new ArrayList<>();
         for (String f : fts) {
