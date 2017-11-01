@@ -98,37 +98,70 @@ public class MessageToWeka {
                         }
 
                         if (msgFeature == MessageFeatures.cluster_kmeans && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getClusterKmeans());
+                            Object val = m.getClusterKmeans();
+                            if (val != null) {
+                                inst.setValue(attr, m.getClusterKmeans());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.sentiment && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getSentiment());
+                            Object sentiment = m.getSentiment();
+                            if (sentiment != null) {
+                                inst.setValue(attr, m.getSentiment());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.number_cluster && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getCluster());
+                            Object val = m.getCluster();
+                            if (val != null) {
+                                inst.setValue(attr, m.getCluster());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.language && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getLanguage());
+                            Object val = m.getLanguage();
+                            if (val != null) {
+                                inst.setValue(attr, m.getLanguage());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.shares && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getShares());
+                            Object val = m.getShares();
+                            if (val != null) {
+                                inst.setValue(attr, m.getShares());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.favs && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getFavs());
+                            Object val = m.getFavs();
+                            if (val != null) {
+                                inst.setValue(attr, m.getFavs());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.latitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getLatitude());
+                            Object val = m.getLatitude();
+                            if (val != null) {
+                                inst.setValue(attr, m.getLatitude());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.longitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getLongitude());
+                            Object val = m.getLongitude();
+                            if (val != null) {
+                                inst.setValue(attr, m.getLongitude());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.text && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getText());
+                            Object val = m.getText();
+                            if (val != null) {
+                                inst.setValue(attr, m.getText());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.source && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getSource());
+                            Object val = m.getSource();
+                            if (val != null) {
+                                inst.setValue(attr, m.getSource());
+                            }
                         }
                         else if (msgFeature == MessageFeatures.fromUser && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            inst.setValue(attr, m.getFromUser());
+                            Object val = m.getFromUser();
+                            if (val != null) {
+                                inst.setValue(attr, m.getFromUser());
+                            }
                         }
                         else {
                             if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers

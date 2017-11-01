@@ -40,15 +40,16 @@ public class TrainModel {
             AbstractClassifier algorithm = null;
             Instances instances = MessageToWeka.getInstancesFromEntities(entities, config.getFeatures(),config.getModelName());
 
-            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.J48) {
+
+            if (MLAlgorithmEnum.J48.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new J48();
             }
 
-            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.NaiveBayes) {
+            if (MLAlgorithmEnum.NaiveBayes.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new NaiveBayes();
             }
 
-            if (MLAlgorithmEnum.valueOf(config.getAlgorithm()) == MLAlgorithmEnum.LinearRegression) {
+            if (MLAlgorithmEnum.LinearRegression.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new LinearRegression();
                 Attribute regrAttribute = instances.attribute(config.getRegressionAttribute());
                 instances.setClassIndex(regrAttribute.index());
