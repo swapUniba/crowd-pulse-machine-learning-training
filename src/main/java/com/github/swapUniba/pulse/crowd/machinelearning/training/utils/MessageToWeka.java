@@ -7,6 +7,9 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.*;
 
 public class MessageToWeka {
@@ -58,7 +61,7 @@ public class MessageToWeka {
         features = featList.toArray(features);
 
         List<Attribute> numericAttributes = getNumericAttributes(features);
-        List<Attribute> stringAttributes = getStringAttributes(messages,features);
+        List<Attribute> stringAttributes = getStringAttributes(messages,features,modelName);
         List<Attribute> dateAttributes = getDateAttributes(features);
 
         attributes.addAll(numericAttributes);
@@ -130,7 +133,7 @@ public class MessageToWeka {
                             if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
                                     || msgFeature == MessageFeatures.refUsers) && !Arrays.asList(features).contains(attr.name())) {
 
-                                List<String> wordsInMessage = getWordsFromMessage(m, msgFeature);
+                                List<String> wordsInMessage = getWordsFromMessage(m, msgFeature,modelName);
                                 if (wordsInMessage.indexOf(attr.name()) == -1) {
                                     if (inst.value(attr) != 1) {
                                         inst.setValue(attr, 0);
@@ -216,7 +219,7 @@ public class MessageToWeka {
         return result;
     }
 
-    private static List<Attribute> getStringAttributes(List<Message> messages, String[] features) {
+    private static List<Attribute> getStringAttributes(List<Message> messages, String[] features, String modelName) {
 
         List<Attribute> result = new ArrayList<>();
 
@@ -235,6 +238,7 @@ public class MessageToWeka {
                     }
                 }
 
+                // 1 - stringa semplice, 2 - lista di oggetti, 3 - da identificare mediante reflection
                 if (curFeature == MessageFeatures.text) {
                     considerFeature = 1;
                 }
@@ -265,19 +269,32 @@ public class MessageToWeka {
                 else if (curFeature == MessageFeatures.refUsers) {
                     considerFeature = 2;
                 }
+                else {
+                    considerFeature = 3;
+
+                }
 
                 if (considerFeature == 1) { //Stringa semplice
-                    List<String> attrValues = getWords(messages,curFeature);
+                    List<String> attrValues = getWords(messages,curFeature,modelName);
                     attr = new Attribute(curFeature.toString(),attrValues);
                     result.add(attr);
                 }
                 else if (considerFeature == 2) { // Lista di stringhe
-                    List<String> attrValues = getWords(messages,curFeature);
+                    List<String> attrValues = getWords(messages,curFeature, modelName);
                     for (String attrVal : attrValues) {
                         attr = new Attribute(attrVal);
                         result.add(attr);
                     }
                 }
+                /*else if (considerFeature == 3) { //feature non mappata, la tratta come token con prefisso ft_
+                    // TODO: integrare la reflection per estrarre la property dall'oggetto
+                    List<String> attrValues = getWordsFromUnknownFeature(messages,feature);
+                    for(String attrVal : attrValues) {
+                        attr = new Attribute(attrVal);
+                        result.add(attr);
+                    }
+                }*/
+
             }
 
             catch (Exception ex) {
@@ -328,12 +345,12 @@ public class MessageToWeka {
         return result;
     }
 
-    private static List<String> getWords(List<Message> messages, MessageFeatures feature) {
+    private static List<String> getWords(List<Message> messages, MessageFeatures feature, String modelName) {
 
         List<String> result = new ArrayList<>();
 
         for (Message m : messages) {
-            Set<String> words = new HashSet(getWordsFromMessage(m,feature));
+            Set<String> words = new HashSet(getWordsFromMessage(m,feature,modelName));
             result.addAll(words);
         }
 
@@ -344,7 +361,34 @@ public class MessageToWeka {
 
     }
 
-    private static List<String> getWordsFromMessage(Message message, MessageFeatures feature) {
+    private static List<String> getWordsFromUnknownFeature(List<Message> msgs, String featureName) {
+
+        List<String> result = new ArrayList<>();
+
+        for (Message msg : msgs) {
+
+            try {
+
+                Method method;
+                method = msg.getClass().getMethod(featureName);
+                List<String> featList = (List<String>) method.invoke(null);
+
+                for (String s : featList) {
+                    result.add("ft_" + s);
+                }
+            }
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("Feature: " + featureName + " non riconosciuta!");
+            }
+        }
+
+        Set<String> words = new HashSet<>(result);
+        List<String> output = new ArrayList<>();
+        output.addAll(words);
+        return output;
+    }
+
+    private static List<String> getWordsFromMessage(Message message, MessageFeatures feature, String modelName) {
 
         List<String> result = new ArrayList<>();
 
@@ -356,41 +400,41 @@ public class MessageToWeka {
                 }
             }
         }
-        if (feature == MessageFeatures.tags) {
+        else if (feature == MessageFeatures.tags) {
             Set<Tag> tags = message.getTags();
             for (Tag tg : tags) { //ESCLUDE I TAG DI TRAINING E DI TESTING
                 if (!tg.isStopWord()) {
-                    if (!tg.getText().toLowerCase().startsWith("training_") && !tg.getText().toLowerCase().startsWith("testing_")) {
+                    if (!tg.getText().toLowerCase().startsWith("training_" + modelName) && !tg.getText().toLowerCase().startsWith("testing_" + modelName)) {
                         result.add("tg_" + tg.getText());
                     }
                 }
             }
         }
-        if (feature == MessageFeatures.toUsers) {
+        else if (feature == MessageFeatures.toUsers) {
             List<String> users = message.getToUsers();
             for (String usr : users) {
                 users.add("tu_" + usr);
             }
         }
-        if (feature == MessageFeatures.refUsers) {
+        else if (feature == MessageFeatures.refUsers) {
             List<String> users = message.getRefUsers();
             for (String usr : users) {
                 users.add("ru_" + usr);
             }
         }
-        if (feature == MessageFeatures.text) {
+        else if (feature == MessageFeatures.text) {
             result.add(message.getText());
         }
-        if (feature == MessageFeatures.source) {
+        else if (feature == MessageFeatures.source) {
             result.add(message.getSource());
         }
-        if (feature == MessageFeatures.fromUser) {
+        else if (feature == MessageFeatures.fromUser) {
             result.add(message.getFromUser());
         }
-        if (feature == MessageFeatures.parent) {
+        else if (feature == MessageFeatures.parent) {
             result.add(message.getParent());
         }
-        if (feature == MessageFeatures.language) {
+        else if (feature == MessageFeatures.language) {
             result.add(message.getLanguage());
         }
 
@@ -398,14 +442,14 @@ public class MessageToWeka {
 
     }
 
-    public static Instance getSingleInstanceFromMessage(Message message, MessageFeatures feature) {
+    public static Instance getSingleInstanceFromMessage(Message message, MessageFeatures feature, String modelName) {
 
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
 
         List<Message> msgs = new ArrayList<>();
         msgs.add(message);
-        words = getWords(msgs,feature);
+        words = getWords(msgs,feature,modelName);
 
         Set<String> uniqueWords = new HashSet(words); //effettua la distinct delle parole
 

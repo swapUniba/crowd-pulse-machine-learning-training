@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = false;
+        boolean testClassification = true;
 
         if (testClassification) {
             TestMessageClassification();
