@@ -49,13 +49,22 @@ public class MessageToWeka {
         //TODO: aggiungere features non codificate, trattandole come token, via reflection
         //bonifica i nomi delle feature prima di avviare il parsing
         List<String> featList = new ArrayList<>();
+        List<String> notRecognizedFeat = new ArrayList<>();
+
         for (String f : fts) {
+            boolean recognized = false;
             for (MessageFeatures ft : MessageFeatures.values()) { //individua la feature nell'enum
                 if (ft.name().toLowerCase().startsWith(f.toLowerCase())) {
                     featList.add(ft.name());
+                    recognized = true;
                     break;
                 }
             }
+
+            if (!recognized) {
+                notRecognizedFeat.add(f);
+            }
+
         }
 
         String[] features = new String[featList.size()];
