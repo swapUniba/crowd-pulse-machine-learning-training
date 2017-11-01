@@ -44,7 +44,7 @@ public class MessageToWeka {
         List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
 
-        List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi che non hanno la classe corretta
+        List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi non etichettati per questo modello
 
         //bonifica i nomi delle feature prima di avviare il parsing
         List<String> featList = new ArrayList<>();
