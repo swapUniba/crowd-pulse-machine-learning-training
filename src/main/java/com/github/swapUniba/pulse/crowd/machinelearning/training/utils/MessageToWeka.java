@@ -91,34 +91,7 @@ public class MessageToWeka {
             Instance inst = new DenseInstance(attributes.size()); //nAttributes deve essere già scremato dagli id
             inst.setDataset(result);
 
-            // tratta le feature non riconosciute come liste di stringhe
-            try {
-                if (notRecognizedFeat != null && notRecognizedFeat.size() > 0) {
-                    for (String feature : notRecognizedFeat) {
-                        List<String> unknownAttributeValues = getWordsFromUnknownAttribute(m,feature);
-
-                        Attribute unknownAttr = null;
-                        Iterator<Attribute> enUnknownAttr = unknownAttributes.iterator();
-                        while (enUnknownAttr.hasNext()) {
-                            Attribute curAttr = enUnknownAttr.next();
-                            if (curAttr.name().toLowerCase().equalsIgnoreCase("ft_" + feature.toLowerCase())) {
-                                unknownAttr = curAttr;
-                                break;
-                            }
-                        }
-
-                        if (unknownAttributeValues.indexOf(unknownAttr.name()) == -1) {
-                            if (inst.value(unknownAttr) != 1) {
-                                inst.setValue(unknownAttr, 0);
-                            }
-                        } else {
-                            inst.setValue(unknownAttr, 1);
-                        }
-                    }
-                }
-            }
-            catch(Exception ex) {
-            }
+            setUnknownAttrInstanceValue(notRecognizedFeat,unknownAttributes,m,inst); // imposta nell'instance i valori unknown
 
             // tratta le feature normalmente riconosciute
             for (String feature : features) {
@@ -473,6 +446,38 @@ public class MessageToWeka {
         }
 
         return result;
+    }
+
+    private static void setUnknownAttrInstanceValue(List<String> notRecognizedFeat, List<Attribute> unknownAttributes, Message m, Instance inst) {
+
+        // tratta le feature non riconosciute come liste di stringhe
+        try {
+            if (notRecognizedFeat != null && notRecognizedFeat.size() > 0) {
+                for (String feature : notRecognizedFeat) {
+                    List<String> unknownAttributeValues = getWordsFromUnknownAttribute(m,feature);
+
+                    Attribute unknownAttr = null;
+                    Iterator<Attribute> enUnknownAttr = unknownAttributes.iterator();
+                    while (enUnknownAttr.hasNext()) {
+                        Attribute curAttr = enUnknownAttr.next();
+                        if (curAttr.name().toLowerCase().equalsIgnoreCase("ft_" + feature.toLowerCase())) {
+                            unknownAttr = curAttr;
+                            break;
+                        }
+                    }
+
+                    if (unknownAttributeValues.indexOf(unknownAttr.name()) == -1) {
+                        if (inst.value(unknownAttr) != 1) {
+                            inst.setValue(unknownAttr, 0);
+                        }
+                    } else {
+                        inst.setValue(unknownAttr, 1);
+                    }
+                }
+            }
+        }
+        catch(Exception ex) {
+        }
     }
 
     private static List<String> getWordsFromMessage(Message message, MessageFeatures feature, String modelName) {
