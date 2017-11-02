@@ -117,6 +117,13 @@ public class TrainModel {
 
     }
 
+    /**
+     * Riordina gli attributi mettendo per ultimo quello usato come variabile dipendente, per
+     * facilitare poi la fase di testing
+     * @param instances
+     * @param attrIndex
+     * @return
+     */
     private static Instances reorderAttributes(Instances instances, int attrIndex) {
 
         Reorder reorderFilter = new Reorder();
