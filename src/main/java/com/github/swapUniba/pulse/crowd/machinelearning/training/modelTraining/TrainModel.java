@@ -13,6 +13,9 @@ import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
 import weka.core.Attribute;
 import weka.core.Instances;
+import weka.filters.Filter;
+import weka.filters.unsupervised.attribute.Reorder;
+import weka.filters.unsupervised.instance.SparseToNonSparse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +55,8 @@ public class TrainModel {
             if (MLAlgorithmEnum.LinearRegression.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new LinearRegression();
                 Attribute regrAttribute = instances.attribute(config.getRegressionAttribute());
-                instances.setClassIndex(regrAttribute.index());
+                instances = reorderAttributes(instances,regrAttribute.index());
+                //instances.setClassIndex(regrAttribute.index());
             }
 
             if (instances.classIndex() == -1) {
@@ -61,7 +65,7 @@ public class TrainModel {
 
             WekaModelHandler.saveFeatures(config.getFeatures(),config.getModelName());
             WekaModelHandler.SaveTrainingSet(instances,config.getModelName());
-            WekaModelHandler.SaveInstanceStructure(instances,config.getModelName());
+            //WekaModelHandler.SaveInstanceStructure(instances,config.getModelName());
 
             // +++++ EVALUATION +++++
             try {
@@ -113,5 +117,20 @@ public class TrainModel {
 
     }
 
+    private static Instances reorderAttributes(Instances instances, int attrIndex) {
+
+        Reorder reorderFilter = new Reorder();
+
+        try {
+            reorderFilter.setAttributeIndices(Integer.toString(attrIndex+2) + "-last," + Integer.toString(attrIndex+1));
+            reorderFilter.setInputFormat(instances);
+            instances = Filter.useFilter(instances, reorderFilter);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return instances;
+
+    }
 
 }

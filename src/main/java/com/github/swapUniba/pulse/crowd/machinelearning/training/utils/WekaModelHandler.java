@@ -36,7 +36,7 @@ public class WekaModelHandler {
         return cls;
     }
 
-    public static void SaveInstanceStructure(Instances insts, String filename) {
+    /*public static void SaveInstanceStructure(Instances insts, String filename) {
         System.out.println("PERCORSO MODELLI SALVATI: " + curPath);
         ArffSaver saver = new ArffSaver();
         saver.setStructure(insts);
@@ -50,7 +50,7 @@ public class WekaModelHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     public static Instances LoadInstanceStructure(String modelName) {
 
