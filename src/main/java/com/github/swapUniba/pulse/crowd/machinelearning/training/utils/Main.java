@@ -142,7 +142,7 @@ public class Main {
         mlcfg.setModelName("regressione");
         mlcfg.setAlgorithmParams("");
         mlcfg.setRegressionAttribute("favs");
-        mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
+        mlcfg.setEvaluation("-x 5"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
     }
