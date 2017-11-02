@@ -7,8 +7,6 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
-
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -72,26 +70,57 @@ public class MessageToWeka {
         List<Attribute> numericAttributes = getNumericAttributes(features);
         List<Attribute> stringAttributes = getStringAttributes(messages,features,modelName);
         List<Attribute> dateAttributes = getDateAttributes(features);
-        //TODO: aggiungere features non codificate, trattandole come token, via reflection, dalla lista notRecognizedFeat
+        List<Attribute> unknownAttributes = getUnknownAttributes(messages,notRecognizedFeat);//aggiunge features non codificate, trattandole come token, via reflection, dalla lista notRecognizedFeat
+
         attributes.addAll(numericAttributes);
         attributes.addAll(stringAttributes);
         attributes.addAll(dateAttributes);
+
+        if (unknownAttributes != null && unknownAttributes.size() > 0) {
+            attributes.addAll(unknownAttributes);
+        }
 
         List<String> classValues = getClassValues(messages,modelName);
         Attribute classAttr = new Attribute(classAttributeName,classValues);
         attributes.add(classAttr);
 
         result = new Instances(modelName,attributes,10);
-        //result.setClassIndex(result.numAttributes() - 1);
-
-        //SALVATAGGIO DELLA STRUTTURA!
-        //WekaModelHandler.SaveInstanceStructure(result,modelName);
 
         for (Message m : messages) {
 
             Instance inst = new DenseInstance(attributes.size()); //nAttributes deve essere già scremato dagli id
             inst.setDataset(result);
 
+            // tratta le feature non riconosciute come liste di stringhe
+            try {
+                if (notRecognizedFeat != null && notRecognizedFeat.size() > 0) {
+                    for (String feature : notRecognizedFeat) {
+                        List<String> unknownAttributeValues = getWordsFromUnknownAttribute(m,feature);
+
+                        Attribute unknownAttr = null;
+                        Iterator<Attribute> enUnknownAttr = unknownAttributes.iterator();
+                        while (enUnknownAttr.hasNext()) {
+                            Attribute curAttr = enUnknownAttr.next();
+                            if (curAttr.name().toLowerCase().equalsIgnoreCase("ft_" + feature.toLowerCase())) {
+                                unknownAttr = curAttr;
+                                break;
+                            }
+                        }
+
+                        if (unknownAttributeValues.indexOf(unknownAttr.name()) == -1) {
+                            if (inst.value(unknownAttr) != 1) {
+                                inst.setValue(unknownAttr, 0);
+                            }
+                        } else {
+                            inst.setValue(unknownAttr, 1);
+                        }
+                    }
+                }
+            }
+            catch(Exception ex) {
+            }
+
+            // tratta le feature normalmente riconosciute
             for (String feature : features) {
 
                 for(Attribute attr : attributes) { //dove non c'è l'occorrenza devo mettere 0
@@ -99,11 +128,6 @@ public class MessageToWeka {
                     if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
 
                         MessageFeatures msgFeature = MessageFeatures.valueOf(feature);
-
-                        if (msgFeature == null) {
-                            MachineLearningTrainingPlugin.logger.error("FEATURE: " + feature  + " non riconosciuta!");
-                            continue;
-                        }
 
                         if (msgFeature == MessageFeatures.cluster_kmeans && attr.name().equalsIgnoreCase(msgFeature.toString())) {
                             Object val = m.getClusterKmeans();
@@ -328,14 +352,6 @@ public class MessageToWeka {
                         result.add(attr);
                     }
                 }
-                /*else if (considerFeature == 3) { //feature non mappata, la tratta come token con prefisso ft_
-                    // TODO: integrare la reflection per estrarre la property dall'oggetto
-                    List<String> attrValues = getWordsFromUnknownFeature(messages,feature);
-                    for(String attrVal : attrValues) {
-                        attr = new Attribute(attrVal);
-                        result.add(attr);
-                    }
-                }*/
 
             }
 
@@ -403,31 +419,60 @@ public class MessageToWeka {
 
     }
 
-    private static List<String> getWordsFromUnknownFeature(List<Message> msgs, String featureName) {
+    private static List<Attribute> getUnknownAttributes(List<Message> msgs, List<String> features) {
+
+        List<Attribute> result = new ArrayList<>();
+
+        for (String feature : features) {
+
+            for (Message msg : msgs) {
+
+                try {
+
+                    //Method method;
+                    //method = msg.getClass().getMethod(feature);
+                    List<String> featList = null;
+                    Method method = ReflectionUtils.getGettersMethods(Message.class, feature);
+                    if (method != null) {
+                        featList = (List<String>) method.invoke(msg, new Object[] {});
+                    }
+
+                    for (String s : featList) {
+                        Attribute attr = new Attribute("ft_" + s);
+                        result.add(attr);
+                    }
+                }
+                catch (Exception ex) {
+                    //MachineLearningTrainingPlugin.logger.error("Feature: " + feature + " non riconosciuta!");
+                }
+            }
+
+        }
+
+        return result;
+    }
+
+    private static List<String> getWordsFromUnknownAttribute(Message msg, String feature) {
 
         List<String> result = new ArrayList<>();
 
-        for (Message msg : msgs) {
+        try {
 
-            try {
-
-                Method method;
-                method = msg.getClass().getMethod(featureName);
-                List<String> featList = (List<String>) method.invoke(null);
-
-                for (String s : featList) {
-                    result.add("ft_" + s);
-                }
+            List<String> featList = null;
+            Method method = ReflectionUtils.getGettersMethods(Message.class, feature);
+            if (method != null) {
+                featList = (List<String>) method.invoke(msg, new Object[] {});
             }
-            catch (Exception ex) {
-                MachineLearningTrainingPlugin.logger.error("Feature: " + featureName + " non riconosciuta!");
+
+            for (String s : featList) {
+                result.add(s);
             }
         }
+        catch (Exception ex) {
+            //MachineLearningTrainingPlugin.logger.error("Feature: " + feature + " non riconosciuta!");
+        }
 
-        Set<String> words = new HashSet<>(result);
-        List<String> output = new ArrayList<>();
-        output.addAll(words);
-        return output;
+        return result;
     }
 
     private static List<String> getWordsFromMessage(Message message, MessageFeatures feature, String modelName) {

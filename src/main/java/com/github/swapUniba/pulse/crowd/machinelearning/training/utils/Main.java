@@ -57,6 +57,7 @@ public class Main {
                 pol = "pd";
             }
 
+            msg.setoId(getRandomString());
             msg.setLatitude(rndm.nextDouble());
             msg.setLongitude(rndm.nextDouble());
             msg.setLanguage("en");
@@ -76,7 +77,7 @@ public class Main {
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setFeatures(new String[]{"oId","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R");
         mlcfg.setRegressionAttribute("favs");
