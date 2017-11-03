@@ -14,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = true;
+        boolean testClassification = false;
 
         if (testClassification) {
             TestMessageClassification();

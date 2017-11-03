@@ -54,6 +54,9 @@ public class TrainModel {
 
             if (MLAlgorithmEnum.LinearRegression.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new LinearRegression();
+                if (config.getRegressionAttribute() == null || config.getRegressionAttribute() == "") {
+                    throw new Exception("Indicare l'attributo da usare come variabile dipendente nella regressione!");
+                }
                 Attribute regrAttribute = instances.attribute(config.getRegressionAttribute());
                 instances = reorderAttributes(instances,regrAttribute.index());
                 //instances.setClassIndex(regrAttribute.index());
