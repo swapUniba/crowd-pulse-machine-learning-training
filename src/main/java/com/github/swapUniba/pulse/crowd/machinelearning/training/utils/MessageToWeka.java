@@ -181,7 +181,8 @@ public class MessageToWeka {
                         }
                         else {
                             if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
-                                    || msgFeature == MessageFeatures.refUsers) && !Arrays.asList(features).contains(attr.name())) {
+                                    || msgFeature == MessageFeatures.refUsers  || msgFeature == MessageFeatures.customTags)
+                                    && !Arrays.asList(features).contains(attr.name())) {
 
                                 List<String> wordsInMessage = getWordsFromMessage(m, msgFeature,modelName);
                                 if (wordsInMessage.indexOf(attr.name()) == -1) {
@@ -523,6 +524,12 @@ public class MessageToWeka {
             List<String> users = message.getRefUsers();
             for (String usr : users) {
                 users.add("ru_" + usr);
+            }
+        }
+        else if (feature == MessageFeatures.customTags) {
+            List<String> customTags = message.getCustomTags();
+            for (String ct : customTags) {
+                result.add("ct_" + ct);
             }
         }
         else if (feature == MessageFeatures.text) {

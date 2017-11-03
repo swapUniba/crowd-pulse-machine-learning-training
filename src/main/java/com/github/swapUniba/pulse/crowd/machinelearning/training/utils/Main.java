@@ -38,6 +38,7 @@ public class Main {
 
             List<Token> tokens = new ArrayList<>();
             Set<Tag> tags = new HashSet<>();
+            List<String> customTags = new ArrayList<>();
 
             for (int ii = 0; ii < nTokens;ii++) {
                 tokens.add(new Token(getRandomString()));
@@ -58,6 +59,8 @@ public class Main {
                 pol = "pd";
             }
 
+            customTags.add(getRandomString());
+
             msg.setoId(getRandomString());
             msg.setLatitude(rndm.nextDouble());
             msg.setLongitude(rndm.nextDouble());
@@ -71,6 +74,7 @@ public class Main {
             Tag tag = new Tag();
             tag.setText("training_modello_class_" + pol);
             tags.add(tag);
+            msg.setCustomTags(customTags);
             msg.setTokens(tokens);
             msg.setTags(tags);
             msgs.add(msg);
@@ -79,7 +83,7 @@ public class Main {
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"oId","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setFeatures(new String[]{"oId","customTags","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R");
         //mlcfg.setRegressionAttribute("favs");
