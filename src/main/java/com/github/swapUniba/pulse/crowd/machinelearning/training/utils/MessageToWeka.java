@@ -8,6 +8,7 @@ import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
 import java.lang.reflect.Method;
+import java.text.ParseException;
 import java.util.*;
 
 public class MessageToWeka {
@@ -166,6 +167,16 @@ public class MessageToWeka {
                             Object val = m.getFromUser();
                             if (val != null) {
                                 inst.setValue(attr, m.getFromUser());
+                            }
+                        }
+                        else if (msgFeature == MessageFeatures.date && attr.name().equalsIgnoreCase(msgFeature.toString())) {
+                            Date date = m.getDate();
+                            if (date != null) {
+                                try {
+                                    inst.setValue(attr,attr.parseDate(attr.formatDate(date.getTime())));
+                                } catch (ParseException e) {
+                                    MachineLearningTrainingPlugin.logger.error("ERRORE: DATA NON RICONOSCIUTA!" + e.toString());
+                                }
                             }
                         }
                         else {
@@ -360,7 +371,7 @@ public class MessageToWeka {
                 }
 
                 if (considerFeature) {
-                    attr = new Attribute("dateTime","yyyy-MM-dd HH:mm:ss");
+                    attr = new Attribute("date","yyyy-MM-dd HH:mm:ss");
                 }
 
                 if (attr != null) {

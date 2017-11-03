@@ -6,6 +6,7 @@ import com.github.frapontillo.pulse.crowd.data.entity.Tag;
 import com.github.frapontillo.pulse.crowd.data.entity.Token;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = false;
+        boolean testClassification = true;
 
         if (testClassification) {
             TestMessageClassification();
@@ -63,6 +64,7 @@ public class Main {
             msg.setLanguage("en");
             msg.setSentiment(rndm.nextDouble());
             msg.setParent(pol);
+            msg.setDate(new Date());
             msg.setFavs(rndm.nextInt(20));
             msg.setShares(rndm.nextInt(20));
             msg.setFromUser(getRandomString());
@@ -77,10 +79,10 @@ public class Main {
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"oId","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setFeatures(new String[]{"oId","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R");
-        mlcfg.setRegressionAttribute("favs");
+        //mlcfg.setRegressionAttribute("favs");
         mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
         trainer.RunTraining();
