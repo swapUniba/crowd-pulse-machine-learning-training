@@ -1,9 +1,6 @@
 package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 
-import com.github.frapontillo.pulse.crowd.data.entity.Entity;
-import com.github.frapontillo.pulse.crowd.data.entity.Message;
-import com.github.frapontillo.pulse.crowd.data.entity.Tag;
-import com.github.frapontillo.pulse.crowd.data.entity.Token;
+import com.github.frapontillo.pulse.crowd.data.entity.*;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
 import org.joda.time.format.ISODateTimeFormat;
@@ -14,7 +11,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        boolean testClassification = false;
+        boolean testClassification = true;
 
         if (testClassification) {
             TestMessageClassification();
@@ -47,6 +44,11 @@ public class Main {
             for (int ii = 0; ii < nTags;ii++) {
                 Tag tag = new Tag();
                 tag.setText(getRandomString());
+                Set<Category> ctgs = new HashSet<>();
+                Category ctg = new Category();
+                ctg.setText("Categoria:" + getRandomString());
+                ctgs.add(ctg);
+                tag.setCategories(ctgs);
                 tags.add(tag);
             }
 
@@ -83,7 +85,7 @@ public class Main {
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
         mlcfg.setAlgorithm("J48");
-        mlcfg.setFeatures(new String[]{"oId","customTags","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
+        mlcfg.setFeatures(new String[]{"categories","customTags","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("-R");
         //mlcfg.setRegressionAttribute("favs");

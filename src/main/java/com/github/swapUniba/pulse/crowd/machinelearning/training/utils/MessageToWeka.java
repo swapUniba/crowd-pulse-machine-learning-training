@@ -181,7 +181,7 @@ public class MessageToWeka {
                         }
                         else {
                             if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
-                                    || msgFeature == MessageFeatures.refUsers  || msgFeature == MessageFeatures.customTags)
+                                    || msgFeature == MessageFeatures.refUsers  || msgFeature == MessageFeatures.customTags || msgFeature == MessageFeatures.categories)
                                     && !Arrays.asList(features).contains(attr.name())) {
 
                                 List<String> wordsInMessage = getWordsFromMessage(m, msgFeature,modelName);
@@ -318,6 +318,9 @@ public class MessageToWeka {
                     considerFeature = 2;
                 }
                 else if (curFeature == MessageFeatures.refUsers) {
+                    considerFeature = 2;
+                }
+                else if (curFeature == MessageFeatures.categories) {
                     considerFeature = 2;
                 }
                 else {
@@ -530,6 +533,27 @@ public class MessageToWeka {
             List<String> customTags = message.getCustomTags();
             for (String ct : customTags) {
                 result.add("ct_" + ct);
+            }
+        }
+        else if (feature == MessageFeatures.categories) {
+            try {
+                Set<Tag> tags = message.getTags();
+                if (tags != null) {
+                    for (Tag tg : tags) {
+                        if (tg.getCategories() != null) {
+                            for (Category ct : tg.getCategories()) {
+                                if (!ct.isStopWord()) {
+                                    String[] ctgs = ct.getText().split(":");
+                                    result.add("cg_" + ctgs[1]);
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex) {
+                MachineLearningTrainingPlugin.logger.error("ERRORE CATEGORIE: " + ex.toString());
             }
         }
         else if (feature == MessageFeatures.text) {

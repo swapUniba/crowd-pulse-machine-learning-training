@@ -18,6 +18,7 @@ public enum MessageFeatures {
     tokens,
     sentiment,
     number_cluster,
-    cluster_kmeans
+    cluster_kmeans,
+    categories
 }
 
