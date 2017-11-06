@@ -11,6 +11,7 @@ import weka.classifiers.Evaluation;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.functions.LinearRegression;
 import weka.classifiers.trees.J48;
+import weka.classifiers.trees.RandomForest;
 import weka.core.Attribute;
 import weka.core.Instances;
 import weka.filters.Filter;
@@ -50,6 +51,10 @@ public class TrainModel {
 
             if (MLAlgorithmEnum.NaiveBayes.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
                 algorithm = new NaiveBayes();
+            }
+
+            if (MLAlgorithmEnum.RandomForest.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {
+                algorithm = new RandomForest();
             }
 
             if (MLAlgorithmEnum.LinearRegression.name().toLowerCase().startsWith(config.getAlgorithm().toLowerCase())) {

@@ -84,10 +84,10 @@ public class Main {
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
-        mlcfg.setAlgorithm("J48");
+        mlcfg.setAlgorithm("RandomForest");
         mlcfg.setFeatures(new String[]{"categories","customTags","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
-        mlcfg.setAlgorithmParams("-R");
+        mlcfg.setAlgorithmParams("");
         //mlcfg.setRegressionAttribute("favs");
         mlcfg.setEvaluation("-no-cv"); //-no-cv per usare l'intero trainingset, -x 10 per il 10FCV, -percentage-split 70, per usare il 70% come training e il 30 testing
         TrainModel trainer = new TrainModel(mlcfg,msgs);
