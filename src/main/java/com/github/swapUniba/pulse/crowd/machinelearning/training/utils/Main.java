@@ -3,8 +3,6 @@ package com.github.swapUniba.pulse.crowd.machinelearning.training.utils;
 import com.github.frapontillo.pulse.crowd.data.entity.*;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.MachineLearningTrainingConfig;
 import com.github.swapUniba.pulse.crowd.machinelearning.training.modelTraining.TrainModel;
-import org.joda.time.format.ISODateTimeFormat;
-
 import java.util.*;
 
 public class Main {
@@ -84,7 +82,7 @@ public class Main {
 
         MachineLearningTrainingConfig mlcfg = new MachineLearningTrainingConfig();
         mlcfg.setPrintFile(true);
-        mlcfg.setAlgorithm("RandomForest");
+        mlcfg.setAlgorithm("J48");
         mlcfg.setFeatures(new String[]{"categories","customTags","date","favs","shares","fromuser","token","tags","sentiment","language","latitude","longitude"});
         mlcfg.setModelName("modello");
         mlcfg.setAlgorithmParams("");

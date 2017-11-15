@@ -71,9 +71,7 @@ public class TrainModel {
                 instances.setClassIndex(instances.numAttributes() - 1);
             }
 
-            WekaModelHandler.saveFeatures(config.getFeatures(),config.getModelName());
             WekaModelHandler.SaveTrainingSet(instances,config.getModelName());
-            //WekaModelHandler.SaveInstanceStructure(instances,config.getModelName());
 
             // +++++ EVALUATION +++++
             try {
