@@ -40,7 +40,6 @@ public class MessageToWeka {
     private static Instances getInstancesFromMessages(List<Message> msgs, String[] fts, String modelName) {
 
         Instances result = null;
-        List<String> words;
         ArrayList<Attribute> attributes = new ArrayList<>();
 
         List<Message> messages = filterMessages(msgs,modelName); //elimina i messaggi non etichettati per questo modello
@@ -94,109 +93,112 @@ public class MessageToWeka {
 
             setUnknownAttrInstanceValue(notRecognizedFeat,unknownAttributes,m,inst); // imposta nell'instance i valori unknown
 
-            // tratta le feature normalmente riconosciute
-            for (String feature : features) {
 
-                for(Attribute attr : attributes) { //dove non c'è l'occorrenza devo mettere 0
+            for(Attribute attr : attributes) { //dove non c'è l'occorrenza devo mettere 0
 
-                    if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
+                if(!attr.name().toLowerCase().startsWith(classAttributeName.toLowerCase())) {
 
-                        MessageFeatures msgFeature = MessageFeatures.valueOf(feature);
 
-                        if (msgFeature == MessageFeatures.cluster_kmeans && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getClusterKmeans();
-                            if (val != null) {
-                                inst.setValue(attr, m.getClusterKmeans());
+                    if (attr.name().equalsIgnoreCase(MessageFeatures.cluster_kmeans.name())) {
+                        Object val = m.getClusterKmeans();
+                        if (val != null) {
+                            inst.setValue(attr, m.getClusterKmeans());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.sentiment.name())) {
+                        Object sentiment = m.getSentiment();
+                        if (sentiment != null) {
+                            inst.setValue(attr, m.getSentiment());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.number_cluster.name())) {
+                        Object val = m.getCluster();
+                        if (val != null) {
+                            inst.setValue(attr, m.getCluster());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.language.name())) {
+                        Object val = m.getLanguage();
+                        if (val != null) {
+                            inst.setValue(attr, m.getLanguage());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.shares.name())) {
+                        Object val = m.getShares();
+                        if (val != null) {
+                            inst.setValue(attr, m.getShares());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.favs.name())) {
+                        Object val = m.getFavs();
+                        if (val != null) {
+                            inst.setValue(attr, m.getFavs());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.latitude.name())) {
+                        Object val = m.getLatitude();
+                        if (val != null) {
+                            inst.setValue(attr, m.getLatitude());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.longitude.name())) {
+                        Object val = m.getLongitude();
+                        if (val != null) {
+                            inst.setValue(attr, m.getLongitude());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.text.name())) {
+                        Object val = m.getText();
+                        if (val != null) {
+                            inst.setValue(attr, m.getText());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.source.name())) {
+                        Object val = m.getSource();
+                        if (val != null) {
+                            inst.setValue(attr, m.getSource());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.fromUser.name())) {
+                        Object val = m.getFromUser();
+                        if (val != null) {
+                            inst.setValue(attr, m.getFromUser());
+                        }
+                    }
+                    else if (attr.name().equalsIgnoreCase(MessageFeatures.date.name())) {
+                        Date date = m.getDate();
+                        if (date != null) {
+                            try {
+                                inst.setValue(attr,attr.parseDate(attr.formatDate(date.getTime())));
+                            } catch (ParseException e) {
+                                MachineLearningTrainingPlugin.logger.error("ERRORE: DATA NON RICONOSCIUTA!" + e.toString());
                             }
                         }
-                        else if (msgFeature == MessageFeatures.sentiment && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object sentiment = m.getSentiment();
-                            if (sentiment != null) {
-                                inst.setValue(attr, m.getSentiment());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.number_cluster && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getCluster();
-                            if (val != null) {
-                                inst.setValue(attr, m.getCluster());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.language && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getLanguage();
-                            if (val != null) {
-                                inst.setValue(attr, m.getLanguage());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.shares && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getShares();
-                            if (val != null) {
-                                inst.setValue(attr, m.getShares());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.favs && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getFavs();
-                            if (val != null) {
-                                inst.setValue(attr, m.getFavs());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.latitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getLatitude();
-                            if (val != null) {
-                                inst.setValue(attr, m.getLatitude());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.longitude && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getLongitude();
-                            if (val != null) {
-                                inst.setValue(attr, m.getLongitude());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.text && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getText();
-                            if (val != null) {
-                                inst.setValue(attr, m.getText());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.source && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getSource();
-                            if (val != null) {
-                                inst.setValue(attr, m.getSource());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.fromUser && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Object val = m.getFromUser();
-                            if (val != null) {
-                                inst.setValue(attr, m.getFromUser());
-                            }
-                        }
-                        else if (msgFeature == MessageFeatures.date && attr.name().equalsIgnoreCase(msgFeature.toString())) {
-                            Date date = m.getDate();
-                            if (date != null) {
-                                try {
-                                    inst.setValue(attr,attr.parseDate(attr.formatDate(date.getTime())));
-                                } catch (ParseException e) {
-                                    MachineLearningTrainingPlugin.logger.error("ERRORE: DATA NON RICONOSCIUTA!" + e.toString());
-                                }
-                            }
-                        }
-                        else {
-                            if ((msgFeature == MessageFeatures.tags || msgFeature == MessageFeatures.tokens || msgFeature == MessageFeatures.toUsers
-                                    || msgFeature == MessageFeatures.refUsers  || msgFeature == MessageFeatures.customTags || msgFeature == MessageFeatures.categories)
-                                    && !Arrays.asList(features).contains(attr.name())) {
+                    }
+                    else {
 
-                                List<String> wordsInMessage = getWordsFromMessage(m, msgFeature,modelName);
-                                if (wordsInMessage.indexOf(attr.name()) == -1) {
-                                    if (inst.value(attr) != 1) {
-                                        inst.setValue(attr, 0);
-                                    }
-                                } else {
-                                    inst.setValue(attr, 1);
-                                }
-                            }
+                        if (attr.name().startsWith("tg_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.tags, m, modelName);
+                        }
+                        else if (attr.name().startsWith("tk_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.tokens, m,modelName);
+                        }
+                        else if (attr.name().startsWith("ru_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.refUsers, m,modelName);
+                        }
+                        else if (attr.name().startsWith("tu_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.toUsers, m,modelName);
+                        }
+                        else if (attr.name().startsWith("ct_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.customTags, m,modelName);
+                        }
+                        else if (attr.name().startsWith("cg_")) {
+                            setPresenceOfAttribute(inst, attr, MessageFeatures.categories, m,modelName);
                         }
                     }
                 }
             }
+
             String classValue = getMessageClassLabel(m,modelName);
             if (!classValue.equalsIgnoreCase("")) {
                 inst.setValue(classAttr,classValue);
@@ -206,6 +208,26 @@ public class MessageToWeka {
         }
 
         return result;
+    }
+
+    private static void setPresenceOfAttribute(Instance inst, Attribute attr, MessageFeatures feature, Message m, String modelName) {
+        List<String> wordsInMessage = getWordsFromMessage(m, feature, modelName);
+        if (wordsInMessage.indexOf(attr.name()) == -1) {
+            try {
+                if (inst.value(attr) != 1) {
+                    inst.setValue(attr, 0);
+                }
+            } catch (Exception ex) {
+                inst.setValue(attr, 0);
+                String a = "";
+            }
+        } else {
+            try {
+                inst.setValue(attr, 1);
+            } catch (Exception ex) {
+                String a = "";// attributo non presente nel messaggio
+            }
+        }
     }
 
     private static List<Attribute> getNumericAttributes(String[] features) {
