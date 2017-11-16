@@ -31,68 +31,6 @@ public class WekaModelHandler {
         weka.core.SerializationHelper.write(curPath  + filename+".model", predictiveModel);
     }
 
-    public static Classifier LoadModel(String filename) throws Exception {
-        Classifier cls = (Classifier) weka.core.SerializationHelper.read(curPath + filename + ".model");
-        return cls;
-    }
-
-    /*public static void SaveInstanceStructure(Instances insts, String filename) {
-        System.out.println("PERCORSO MODELLI SALVATI: " + curPath);
-        ArffSaver saver = new ArffSaver();
-        saver.setStructure(insts);
-        try {
-            saver.setFile(new File(curPath +filename+ "_structure.arff"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            saver.writeBatch();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
-    public static Instances LoadInstanceStructure(String modelName) {
-
-        BufferedReader reader =
-                null;
-        try {
-            reader = new BufferedReader(new FileReader(curPath +modelName+ "_structure.arff"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ArffLoader.ArffReader arff = null;
-        try {
-            arff = new ArffLoader.ArffReader(reader);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Instances data = arff.getData();
-        data.setClassIndex(data.numAttributes() - 1);
-
-        return data;
-    }
-
-    public static Instances LoadTrainingSet(String modelName) {
-
-        BufferedReader br = null;
-        try {
-            br = new BufferedReader(new FileReader(curPath +modelName+ "_training.arff"));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ArffLoader.ArffReader arff = null;
-        try {
-            arff = new ArffLoader.ArffReader(br);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Instances data = arff.getData();
-        data.setClassIndex(-1);
-
-        return data;
-    }
-
     public static void SaveTrainingSet(Instances insts, String modelName) {
 
         ArffSaver saver = new ArffSaver();
@@ -107,41 +45,6 @@ public class WekaModelHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void saveFeatures(String[] features, String modelName) {
-
-        try(  PrintWriter out = new PrintWriter( curPath + modelName + ".features" )  ){
-            for (String ft : features) {
-                out.println( ft );
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public static String[] loadFeatures(String modelName) {
-
-        List<String> result = new ArrayList<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(curPath + modelName + ".features"))) {
-
-            String sCurrentLine;
-
-            while ((sCurrentLine = br.readLine()) != null) {
-                result.add(sCurrentLine);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        String[] features = new String[result.size()];
-        features = result.toArray(features);
-
-        return features;
-
     }
 
     public static String getModelPath(String modelName) {
