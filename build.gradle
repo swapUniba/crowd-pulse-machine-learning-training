@@ -14,7 +14,7 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'com.github.swapUniba:crowd-pulse-data-java:0.0.1'
+    compile 'com.github.swapUniba:crowd-pulse-data-java:master-SNAPSHOT'
     compile group: 'nz.ac.waikato.cms.weka', name: 'weka-stable', version: '3.8.0'
     compile group: 'nz.ac.waikato.cms.weka.thirdparty', name: 'java-cup-11b-runtime', version: '2015.03.26'
     compile group: 'nz.ac.waikato.cms.weka.thirdparty', name: 'java-cup-11b', version: '2015.03.26'
